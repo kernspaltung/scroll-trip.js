@@ -19,6 +19,7 @@ $(document).ready(function(){
 
 
    setupScroll()
+
    setupResize()
 
 
@@ -40,21 +41,21 @@ function setupScroll() {
             var scrollTop = scrollContainer.scrollTop()
 
 
-
             // $('.travel').stop().animate({
             //    marginLeft: (scrollAmount * 200)
             // })
 
             scrollPct = ( Math.min(totalHeight, scrollTop) / totalHeight )
 
-            nextElement = Math.ceil(scrollPct * $('.level').length)
+            nextElement = Math.floor(scrollPct * $('.level').length)
 
-            if(currentElement !== nextElement) {
+            if( currentElement !== nextElement) {
 
-               nextHeight = $('.level').first().outerHeight() * currentElement
+
+               nextHeight = $('.level').first().outerHeight() * nextElement
 
                nextHeight *= -1
-               console.log( nextHeight )
+
                $('.travel').animate({
                   marginTop: nextHeight
                })
