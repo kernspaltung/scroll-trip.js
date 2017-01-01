@@ -1,5 +1,6 @@
 $(document).foundation()
 
+scrollLengths = []
 isResizing = false
 lastScrollTop = 0
 scrollAmount = 0
@@ -47,7 +48,25 @@ function setupScroll() {
 
             scrollPct = ( Math.min(totalHeight, scrollTop) / totalHeight )
 
-            nextElement = Math.floor(scrollPct * $('.level').length)
+            // temporary solution: map 0-1.0 range between levels equally.
+            // TO-DO: select element considering element width
+
+
+
+            for( i in scrollLengths ) {
+
+               if( scrollTop > scrollLengths[i].start && scrollTop < scrollLengths[i].start + scrollLengths[i].length ) {
+
+                  nextElement = i;
+
+                  break;
+
+               }
+
+            }
+
+
+            // nextElement = Math.floor(scrollPct * $('.level').length)
 
             if( currentElement !== nextElement) {
 
@@ -59,6 +78,11 @@ function setupScroll() {
                $('.travel').animate({
                   marginTop: nextHeight
                })
+
+            } else {
+
+               console.log( $('.level').eq( currentElement ).width() );
+
 
             }
 
@@ -95,21 +119,27 @@ function getTotalScrollHeight() {
 
    items.each(function(){
 
-      if( $(this).index() < items.length -1 ) {
 
-         $(this).css({backgroundColor: '#0bc1ed'})
+      $(this).css({backgroundColor: '#0bc1ed'})
 
-         scrollLength = $(this).height()
+      scrollLength = $(this).height()
 
 
-         if( $(this).width() > scrollContainer.width() ) {
+      if( $(this).width() > scrollContainer.width() ) {
 
-            scrollLength += $(this).width() - scrollContainer.width()
+         scrollLength += $(this).width() - scrollContainer.width()
 
-         }
+      }
 
-         $(this).attr('data-scroll-length', scrollLength);
+      $(this).attr('data-scroll-length', scrollLength);
 
+
+      scrollLengths.push({
+         start: totalHeight,
+         length: scrollLength
+      })
+      totalHeight += scrollLength
+      if( $(this).index() >= items.length -1 ) {
          totalHeight += scrollLength
 
       }
