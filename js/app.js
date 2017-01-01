@@ -6,13 +6,14 @@ lastScrollTop = 0
 scrollAmount = 0
 step = 100
 scrollContainer = $('.scroll-container')
-currentElement = -1
+currentElementIndex = -1
 
 $(document).ready(function(){
 
 
    totalHeight = getTotalScrollHeight();
 
+console.log(totalHeight);
    // var tcw = $('.travel').css({ left: - ( outerWidth / 2 ) })
 
    $('.empty-height-container').height( totalHeight )
@@ -57,7 +58,7 @@ function setupScroll() {
 
                if( scrollTop > scrollLengths[i].start && scrollTop < scrollLengths[i].start + scrollLengths[i].length ) {
 
-                  nextElement = i;
+                  nextElementIndex = i;
 
                   break;
 
@@ -66,12 +67,13 @@ function setupScroll() {
             }
 
 
-            // nextElement = Math.floor(scrollPct * $('.level').length)
+            nextElementIndex = Math.floor(scrollPct * $('.level').length)
+            nextElement = $('.level').eq( nextElementIndex )
 
-            if( currentElement !== nextElement) {
+            if( currentElementIndex !== nextElementIndex) {
 
 
-               nextHeight = $('.level').first().outerHeight() * nextElement
+               nextHeight = $('.level').first().outerHeight() * nextElementIndex
 
                nextHeight *= -1
 
@@ -81,12 +83,43 @@ function setupScroll() {
 
             } else {
 
-               console.log( $('.level').eq( currentElement ).width() );
+
+               // to find out how much to scroll horizontally,
+               // let's first remove all previous levels' scrollLenghts
+
+               scrollBeforePct = nextElementIndex / $('.level').length
+
+               scrollInLevelPct = scrollPct - scrollBeforePct
+
+               // now interpolate that to the element's pct inside totalHeight
+
+               scrollInLevel = scrollInLevelPct / ( ( nextElement.height() + nextElement.outerWidth() ) / totalHeight )
+
+               // now we multiply that times the extraWidth:
+               // extraWidth = 0
+
+               if( nextElement.outerWidth() > scrollContainer.width() ) {
+
+                  // extraWidth = $('.level').width() - scrollContainer.width()
+                  //
+                  // horizontalScrollTotal = scrollContainer.width() + extraWidth
+                  offsetLeft = scrollInLevel * nextElement.outerWidth()
+// console.log(offsetLeft, scrollInLevel, nextElement.outerWidth());
+                  //
+                  nextElement.animate({ left: - offsetLeft });
+
+               }
+
+
+
+               // offsetLeft = nextElement.width() - scrollContainer.width() / totalHeight;
+
+               // console.log( nextElement.width() );
 
 
             }
 
-            currentElement = nextElement
+            currentElementIndex = nextElementIndex
 
             // console.log( totalHeight , Math.min(totalHeight, scrollTop) )
 
@@ -117,19 +150,21 @@ function getTotalScrollHeight() {
 
 
 
-   items.each(function(){
+   items.each(function(i){
 
 
-      $(this).css({backgroundColor: '#0bc1ed'})
+      $(this).css({
+         top: i / items.length * ( scrollContainer.height() * items.length )
+      })
 
       scrollLength = $(this).height()
 
 
-      if( $(this).width() > scrollContainer.width() ) {
+      // if( $(this).width() > scrollContainer.width() ) {
 
-         scrollLength += $(this).width() - scrollContainer.width()
+         scrollLength += $(this).width()
 
-      }
+      // }
 
       $(this).attr('data-scroll-length', scrollLength);
 
@@ -138,10 +173,11 @@ function getTotalScrollHeight() {
          start: totalHeight,
          length: scrollLength
       })
+
       totalHeight += scrollLength
+
       if( $(this).index() >= items.length -1 ) {
          totalHeight += scrollLength
-
       }
 
    })

@@ -69,10 +69,10 @@ body {
    width: 60vw;
 }
 #level-3 {
-   width: 20vw;
+   width: 90vw;
 }
 #level-4 {
-   width: 90vw;
+   width: 150vw;
 }
 #level-5 {
    width: 30vw;
@@ -127,7 +127,9 @@ body {
    z-index: 2;
 }
 
-
+.level {
+   position: absolute;
+}
 
 
 .travel-container {
