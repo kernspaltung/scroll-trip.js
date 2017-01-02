@@ -55,6 +55,8 @@
 
 
 
+$container_width: 400px;
+$container_height: 233px;
 
 body {
    overflow: hidden;
@@ -62,31 +64,21 @@ body {
 
 
 
+
 #level-1 {
-   width: 45vw;
+   width: $container_width * 1.5;
 }
 #level-2 {
-   width: 60vw;
+   width: $container_width * 2.5;
 }
 #level-3 {
-   width: 90vw;
+   width: $container_width;
 }
 #level-4 {
-   width: 150vw;
+   width: $container_width * 3.5;
 }
 #level-5 {
-   width: 30vw;
-}
-
-
-.level {
-   height: 230px;
-
-   text-align: center;
-
-   font-size: 30px;
-   padding-top: 85px;
-   border: 1px solid #fa0;
+   width: $container_width;
 }
 
 
@@ -94,15 +86,16 @@ body {
 .empty-height-container,
 .travel-container,
 .scroll-container {
-   width: 300px;
-   height: 230px;
-   overflow: auto;
+   width: $container_width;
+   height:$container_height;
+   // overflow: auto;
    border: 1px solid #ddd;
 }
 #scroll-container {
    position: absolute;
    z-index: 1;
-   overflow: auto;
+   overflow-y: auto;
+   overflow-x: hidden !important;
    border: 1px solid red;
 }
 
@@ -115,23 +108,46 @@ body {
 
 .travel-container,
 .travel {
+
    z-index: 0;
    position: absolute;
    left: 0;
    top: 0;
+
 }
 .travel {
    position: fixed;
-}
-.travel {
    z-index: 2;
+
+   .level {
+      position: absolute;
+
+      height: $container_height;
+
+      text-align: center;
+
+      font-size: 30px;
+      padding-top: 85px;
+      border: 1px solid #fa0;
+   }
+
 }
 
-.level {
-   position: absolute;
+
+
+#mask-overlay-1,
+#mask-overlay-2 {
+   margin: 0;
+   padding: 0;
+   background-color: rgba(0,0,0,0.7);
 }
 
-
-.travel-container {
-   // position: fixed;
+#mask-overlay-1 {
+   width: calc(100vw - #{$container_width});
+   height: $container_height;
+   margin-left: $container_width;
+}
+#mask-overlay-2 {
+   width: 100vw;
+   height: calc(100vh - #{$container_height});
 }
