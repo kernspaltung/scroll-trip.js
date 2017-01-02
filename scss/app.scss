@@ -53,10 +53,14 @@
 
 
 
-
+* {
+box-sizing: border-box;
+}
 
 $container_width: 400px;
 $container_height: 233px;
+$font_size: 25px;
+
 
 body {
    overflow: hidden;
@@ -126,28 +130,30 @@ body {
 
       text-align: center;
 
-      font-size: 30px;
-      padding-top: 85px;
+      font-size: $font_size;
+
       border: 1px solid #fa0;
    }
 
 }
 
-
-
+ 
 #mask-overlay-1,
 #mask-overlay-2 {
    margin: 0;
    padding: 0;
    background-color: rgba(0,0,0,0.7);
+   z-index: 99;
+   position: absolute;
 }
 
 #mask-overlay-1 {
    width: calc(100vw - #{$container_width});
    height: $container_height;
-   margin-left: $container_width;
+   left: $container_width;
 }
 #mask-overlay-2 {
    width: 100vw;
+   top: $container_height;
    height: calc(100vh - #{$container_height});
 }
