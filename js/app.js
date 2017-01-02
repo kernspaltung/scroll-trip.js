@@ -14,7 +14,7 @@ $(document).ready(function(){
    totalHeight = getTotalScrollHeight();
 
 console.log(totalHeight);
-   // var tcw = $('.travel').css({ left: - ( outerWidth / 2 ) })
+   // var tcw = $('.travel').css({ left: - ( width / 2 ) })
 
    $('.empty-height-container').height( totalHeight )
 
@@ -53,10 +53,9 @@ function setupScroll() {
             // TO-DO: select element considering element width
 
 
-
             for( i in scrollLengths ) {
 
-               if( scrollTop > scrollLengths[i].start && scrollTop < scrollLengths[i].start + scrollLengths[i].length ) {
+               if( scrollTop > scrollLengths[i].start && scrollTop < scrollLengths[i].start + scrollLengths[i].size ) {
 
                   nextElementIndex = i;
 
@@ -67,7 +66,7 @@ function setupScroll() {
             }
 
 
-            nextElementIndex = Math.floor(scrollPct * $('.level').length)
+            // nextElementIndex = Math.floor(scrollPct * $('.level').length)
             nextElement = $('.level').eq( nextElementIndex )
 
             if( currentElementIndex !== nextElementIndex) {
@@ -77,7 +76,7 @@ function setupScroll() {
 
                nextHeight *= -1
 
-               $('.travel').animate({
+               $('.travel').stop().animate({
                   marginTop: nextHeight
                })
 
@@ -86,27 +85,30 @@ function setupScroll() {
 
                // to find out how much to scroll horizontally,
                // let's first remove all previous levels' scrollLenghts
-
-               scrollBeforePct = nextElementIndex / $('.level').length
-
+               scrollBeforePct = scrollLengths[nextElementIndex].start / totalHeight
+               // scrollBeforePct = nextElementIndex / $('.level').length
                scrollInLevelPct = scrollPct - scrollBeforePct
+console.log(scrollInLevelPct);
+               scrollInLevel = scrollInLevelPct / ( scrollLengths[nextElementIndex].size / totalHeight )
 
                // now interpolate that to the element's pct inside totalHeight
 
-               scrollInLevel = scrollInLevelPct / ( ( nextElement.height() + nextElement.outerWidth() ) / totalHeight )
+               // scrollInLevel = scrollInLevelPct * scrollLengths[nextElementIndex].size
 
                // now we multiply that times the extraWidth:
                // extraWidth = 0
-
-               if( nextElement.outerWidth() > scrollContainer.width() ) {
+console.log(scrollInLevel);
+               if( nextElement.width() > scrollContainer.width() ) {
 
                   // extraWidth = $('.level').width() - scrollContainer.width()
                   //
                   // horizontalScrollTotal = scrollContainer.width() + extraWidth
-                  offsetLeft = scrollInLevel * nextElement.outerWidth()
-// console.log(offsetLeft, scrollInLevel, nextElement.outerWidth());
+                  offsetLeft = scrollInLevel * ( nextElement.outerWidth() - scrollContainer.width() )
+// console.log(offset   Left);
+// console.log( scrollPct, scrollInLevelPct, scrollInLevel, nextElement.width() );
+// console.log(offsetLeft, scrollInLevel, nextElement.width());
                   //
-                  nextElement.animate({ left: - offsetLeft });
+                  nextElement.stop().animate({ left: - offsetLeft });
 
                }
 
@@ -171,7 +173,7 @@ function getTotalScrollHeight() {
 
       scrollLengths.push({
          start: totalHeight,
-         length: scrollLength
+         size: scrollLength
       })
 
       totalHeight += scrollLength
