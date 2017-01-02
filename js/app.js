@@ -158,8 +158,11 @@ function scrollTravel() {
 
       if( nextElement.width() > scrollContainer.width() ) {
 
-         offsetLeft = scrollInLevel * ( nextElement.outerWidth() - scrollContainer.innerWidth() )
-
+         // extraWidth = $('.level').width() - scrollContainer.width()
+         //
+         // horizontalScrollTotal = scrollContainer.width() + extraWidth
+         offsetLeft = scrollInLevel * ( nextElement.outerWidth() - scrollContainer.width() )
+   
          nextElement.stop().animate({ left: - offsetLeft });
 
       }
