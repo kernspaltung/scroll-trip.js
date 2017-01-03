@@ -92,10 +92,6 @@ ob_end_clean();
    </div>
 
 
-   <div id="mask-overlay-1"></div>
-   <div id="mask-overlay-2"></div>
-
-
    <script src="bower_components/jquery/dist/jquery.js"></script>
    <script src="bower_components/what-input/what-input.js"></script>
    <script src="bower_components/foundation-sites/dist/foundation.js"></script>
