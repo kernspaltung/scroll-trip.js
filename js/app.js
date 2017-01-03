@@ -36,40 +36,62 @@ function setupResize() {
 draggingPointer = false;
 
 scrollTotal = 0
-startY = 0;
+startY = 0
+startX = 0
 
 function setupScroll() {
-
-
+   if( scrollContainer.height() >= scrollContainer.width() ) {
+      scrollStep = scrollContainer.height() * 1.5
+   } else {
+      scrollStep = scrollContainer.width() * 1.5
+   }
 
    $(window).on("pointerup", function(event) {
+
+      if( draggingPointer ){
+
+         var direction;
+
+
+         if( Math.abs(startY - event.pageY) > Math.abs(startX - event.pageX ) ) {
+            direction = startY - event.pageY
+         } else {
+            direction = startX - event.pageX
+         }
+
+         direction = Math.max( -1, direction )
+         direction = Math.min( 1, direction )
+
+         increment = direction * scrollStep
+
+         scrollTotal += increment
+         scrollTotal = Math.max( scrollTotal, 0 )
+         scrollTotal = Math.min( scrollTotal, totalHeight )
+
+         scrollTravel()
+
+      }
+
       draggingPointer = false
+
    });
 
    $(window).on("pointerdown", function(event) {
-      draggingPointer = true
+
+      startDraggingPointer = true
 
       startY = event.pageY
+      startX = event.pageX
+
    });
 
 
    $(window).on("pointermove", function(event) {
 
-      if ( draggingPointer ) {
+      if ( startDraggingPointer ) {
 
-         console.log( "scroll", scrollTotal );
-
-         if( startY !== event.pageY ) {
-
-            console.log((event.pageY-startY) * 1.5);
-
-            scrollTotal += ( startY - event.pageY) * 3.5
-
-            doScroll()
-
-            startY = event.pageY
-
-         }
+         draggingPointer = true
+         startDraggingPointer = false
 
       }
 
@@ -77,34 +99,29 @@ function setupScroll() {
 
 
    $(window).on('mousewheel', function(event) {
-      scrollTotal += - event.deltaY * (scrollContainer.height() * 0.80)
-      scrollTotal = Math.max( scrollTotal, 0 )
-      scrollTotal = Math.min( scrollTotal, totalHeight )
 
-      doScroll()
+      if( ! isScrolling ) {
+
+         isScrolling = setTimeout(function(){
+
+            isScrolling = false
+
+            scrollTotal += - event.deltaY * scrollStep
+            scrollTotal = Math.max( scrollTotal, 0 )
+            scrollTotal = Math.min( scrollTotal, totalHeight )
+
+            scrollTravel()
+
+         }, 200 )
+
+      }
+
    });
 
 
 
-   doScroll( 0 )
+   debounceScroll( )
 
-}
-
-function doScroll() {
-   if( ! isScrolling ) {
-
-      isScrolling = setTimeout(function(){
-         isScrolling = false
-
-         // scrollContainer.animate({ scrollTotal: scrollTotal * 20 })
-
-         console.log( "scroll", scrollTotal );
-
-         scrollTravel()
-
-      }, 50 )
-
-   }
 }
 
 

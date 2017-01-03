@@ -57,9 +57,11 @@
 box-sizing: border-box;
 }
 
-$container_width: 400px;
-$container_height: 233px;
-$font_size: 25px;
+
+
+$container_width: 100vw;
+$container_height: 100vh;
+$font_size: 5vh;
 
 
 body {
@@ -173,4 +175,22 @@ $zi2: 2;
    width: 100vw;
    top: $container_height;
    height: calc(100vh - #{$container_height});
+}
+
+
+// disabled texgt selection highlighting for all browsers ( ie>=10)
+* {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+p {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text;
 }
