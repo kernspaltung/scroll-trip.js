@@ -77,8 +77,9 @@ function setupScroll() {
 
 
    $(window).on('mousewheel', function(event) {
-      scrollTotal += - event.deltaY * (scrollContainer.width() * 0.66)
+      scrollTotal += - event.deltaY * (scrollContainer.height() * 0.80)
       scrollTotal = Math.max( scrollTotal, 0 )
+      scrollTotal = Math.min( scrollTotal, totalHeight )
 
       doScroll()
    });
