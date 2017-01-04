@@ -1,3 +1,14 @@
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+  window.webkitRequestAnimationFrame ||
+  window.mozRequestAnimationFrame    ||
+  window.oRequestAnimationFrame      ||
+  window.msRequestAnimationFrame     ||
+  function( callback ){
+    window.setTimeout(callback, 1000 / 60);
+  };
+})();
+
 $(document).foundation()
 
 scrollLengths = []
@@ -8,6 +19,10 @@ step = 100
 scrollContainer = $('.scroll-container')
 currentElementIndex = -1
 
+scrollTotal = 0
+startY = 0
+startX = 0
+nextElementIndex = 0
 $(document).ready(function(){
 
 
@@ -35,18 +50,20 @@ function setupResize() {
 
 draggingPointer = false;
 
-scrollTotal = 0
-startY = 0
-startX = 0
 
 function setupScroll() {
+
+
    if( scrollContainer.height() >= scrollContainer.width() ) {
       scrollStep = scrollContainer.height() * 1.5
    } else {
       scrollStep = scrollContainer.width() * 1.5
    }
 
+
    $(window).on("pointerup", function(event) {
+console.log(event.pageY, event.pageX );
+      console.log("test");
 
       if( draggingPointer ){
 
@@ -78,24 +95,21 @@ function setupScroll() {
 
    $(window).on("pointerdown", function(event) {
 
-      startDraggingPointer = true
-
+      draggingPointer = true
+console.log(startY, startX );
       startY = event.pageY
       startX = event.pageX
 
    });
 
-
    $(window).on("pointermove", function(event) {
-
-      if ( startDraggingPointer ) {
-
-         draggingPointer = true
-         startDraggingPointer = false
-
-      }
+console.log("move");
+      //
+      // startY = event.pageY
+      // startX = event.pageX
 
    });
+
 
 
    $(window).on('mousewheel', function(event) {
@@ -120,7 +134,7 @@ function setupScroll() {
 
 
 
-   debounceScroll( )
+   scrollTravel()
 
 }
 
@@ -194,7 +208,7 @@ function scrollTravel() {
 
    for( i in scrollLengths ) {
 
-      if( scrollTotal > scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
+         if( scrollTotal > scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
 
          nextElementIndex = i;
 
