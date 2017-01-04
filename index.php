@@ -12,7 +12,9 @@ ob_start();
    </small>
 </div>
 <div class="test-container columns medium-6 large-3 panel">
-   <a href="#"><img src="http://fakeimg.pl/300x200/fea330/0ba1ca" alt=""></a>
+   <a href="#">
+Link</a>
+<img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
 </div>
 
 <?php
@@ -39,7 +41,7 @@ ob_end_clean();
 
 <body>
 
-   <div id="scroll-container" class="scroll-container">
+   <div id="scroll-container" class="scroll-container" touch-action="pan-x">
 
 
 
@@ -67,7 +69,7 @@ ob_end_clean();
             <div id="level-3" class="level row expanded">
                <div class="row expanded">
                   Lorem ipsum dolor sit amet.
-                  <img src="http://fakeimg.pl/300x200/fea330/0ba1ca" alt="">
+                  <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
 
                </div>
             </div>
@@ -81,7 +83,7 @@ ob_end_clean();
             <div id="level-5" class="level row expanded">
                <div class="row expanded">
                   Lorem ipsum dolor sit amet.
-                  <img src="http://fakeimg.pl/300x200/fea330/0ba1ca" alt="">
+                  <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
 
                </div>
             </div>

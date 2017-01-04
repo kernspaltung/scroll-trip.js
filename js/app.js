@@ -61,9 +61,9 @@ function setupScroll() {
    }
 
 
-   $(window).on("pointerup", function(event) {
-console.log(event.pageY, event.pageX );
-      console.log("test");
+   $('.scroll-container').on("pointerup", function(event) {
+
+      console.log("up", event.pageY, event.pageX );
 
       if( draggingPointer ){
 
@@ -93,7 +93,7 @@ console.log(event.pageY, event.pageX );
 
    });
 
-   $(window).on("pointerdown", function(event) {
+   $('.scroll-container').on("pointerdown", function(event) {
 
       draggingPointer = true
 console.log(startY, startX );
@@ -102,7 +102,7 @@ console.log(startY, startX );
 
    });
 
-   $(window).on("pointermove", function(event) {
+   $('.scroll-container').on("pointermove", function(event) {
 console.log("move");
       //
       // startY = event.pageY
