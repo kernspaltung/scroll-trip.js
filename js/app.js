@@ -55,6 +55,8 @@ $(document).ready(function(){
       copy.click(function(){
          var i = $(this).index() - 1
 
+
+
          console.log(scrollLengths[i].start);
 
          scrollTotal = scrollLengths[i].start + 1;
@@ -238,7 +240,12 @@ function scrollTravel() {
       if( scrollTotal > scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
 
          nextElementIndex = i;
+         index = parseInt(i)+1
 
+         $('#level-menu li').removeClass('active')
+         .eq( index ).addClass('active')
+
+         
          break;
 
       }
