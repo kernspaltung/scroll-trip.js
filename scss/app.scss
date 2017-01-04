@@ -61,7 +61,7 @@ box-sizing: border-box;
 
 $container_width: 100vw;
 $container_height: 100vh;
-$font_size: 5vh;
+$font_size: 10vh;
 
 
 body {
@@ -193,4 +193,10 @@ p {
     -moz-user-select: text;
     -o-user-select: text;
     user-select: text;
+}
+
+
+
+.background {
+   z-index: -1;
 }
