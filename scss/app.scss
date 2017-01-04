@@ -61,7 +61,7 @@
 
 $container_width: 100vw;
 $container_height: 100vh;
-$font_size: 10vh;
+$font_size: 5vh;
 
 
 body {
@@ -88,16 +88,16 @@ body {
 #level-menu {
    z-index: 9999;
    position: absolute;
-   width: 130px;
-   bottom: 100px;
-   right: 100px;
+   width: 96px;
+   bottom: 16px;
+   right: 16px;
    ul {
       width: 100%;
       margin: 0;
       padding: 0;
       li {
          font-size: 0.7em;
-         padding: 0.5em;
+         padding: 0.35em;
          text-align: center;
          width: 100%;
          margin: 1px 0;
@@ -105,15 +105,16 @@ body {
 
          display: block;
 
-         background-color: #0bc1ed;
-         &:hover {
+         background-color: #bbb;
+         &:hover, &.active {
 
-         background-color: #de1cb0;
+            background-color: #999;
          }
 
       }
    }
 }
+
 
 
 
@@ -124,12 +125,11 @@ body {
 #level-2 {
    width: $container_width * 4;
 }
-#level-3 {
-   width: $container_width;
-}
 #level-4 {
    width: $container_width * 6;
 }
+#level-0,
+#level-3,
 #level-5 {
    width: $container_width;
 }

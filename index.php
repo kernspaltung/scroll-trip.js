@@ -6,114 +6,122 @@ ob_start();
 
 ?>
 
-<div class="test-container columns small-6 medium-4 large-3 panel">
+<div class="columns small-3">
    <small>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor, a.
    </small>
 </div>
-<div class="test-container columns small-6 medium-4 large-3 panel">
+<div class="test-container columns small-3 panel">
    <a href="#">
-      Link</a>
-      <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
-   </div>
+      Link
+   </a>
+   <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
+</div>
 
-   <?php
-   $sample_html = ob_get_contents();
-   ob_end_clean();
+<?php
+$sample_html = ob_get_contents();
+ob_end_clean();
 
-   ?>
-
-
-   <!doctype html>
-   <html class="no-js" lang="en">
-   <head>
-      <meta charset="utf-8">
-      <meta http-equiv="x-ua-compatible" content="ie=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Scroll Trip</title>
-      <link rel="stylesheet" href="css/app.css">
-   </head>
-
-   <style>
+?>
 
 
-   </style>
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+   <meta charset="utf-8">
+   <meta http-equiv="x-ua-compatible" content="ie=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Scroll Trip</title>
+   <link rel="stylesheet" href="css/app.css">
+</head>
 
-   <body>
-
-      <div id="scroll-container" class="scroll-container" touch-action="none">
+<style>
 
 
+</style>
 
-         <div class="empty-height-container">
+<body>
 
-         </div>
+   <div id="scroll-container" class="scroll-container" touch-action="none">
 
-         <div class="travel-container">
-            <div class="travel">
-               <div id="level-1" class="level row expanded" data-title="Test Title 1">
-                  <div class="row expanded">
-                     <?php for ($i=0; $i < 2; $i++) {
-                        echo $sample_html;
-                     } ?>
-                  </div>
 
-               </div>
-               <div id="level-2" class="level row expanded" data-title="Test Title 2">
-                  <div class="row expanded">
-                     <?php for ($i=0; $i < 2; $i++) {
-                        echo $sample_html;
-                     } ?>
-                  </div>
-               </div>
-               <div id="level-3" class="level row expanded" data-title="Test Title 3">
-                  <div class="row expanded">
-                     Lorem ipsum dolor sit amet.
-                     <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
 
-                  </div>
-               </div>
-               <div id="level-4" class="level row expanded" data-title="Test Title 4">
-                  <div class="row expanded">
-                     <?php for ($i=0; $i < 2; $i++) {
-                        echo $sample_html;
-                     } ?>
-                  </div>
-               </div>
-               <div id="level-5" class="level row expanded" data-title="Test Title 5">
-                  <div class="row expanded">
-                     Lorem ipsum dolor sit amet.
-                     <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
-
-                  </div>
-               </div>
-            </div>
-         </div>
-
+      <div class="empty-height-container">
 
       </div>
 
+      <div class="travel-container">
+         <div class="travel">
+            <div id="level-0" class="level row expanded" data-title="Test Title 0">
+               <div class="row expanded">
+                  Lorem ipsum dolor sit amet.
+                  <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
+
+               </div>
+            </div>
+            <div id="level-1" class="level row expanded" data-title="Test Title 1">
+               <div class="row expanded">
+                  <?php for ($i=0; $i < 2; $i++) {
+                     echo $sample_html;
+                  } ?>
+               </div>
+
+            </div>
+            <div id="level-2" class="level row expanded" data-title="Test Title 2">
+               <div class="row expanded">
+                  <?php for ($i=0; $i < 2; $i++) {
+                     echo $sample_html;
+                  } ?>
+               </div>
+            </div>
+            <div id="level-3" class="level row expanded" data-title="Test Title 3">
+               <div class="row expanded">
+                  Lorem ipsum dolor sit amet.
+                  <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
+
+               </div>
+            </div>
+            <div id="level-4" class="level row expanded" data-title="Test Title 4">
+               <div class="row expanded">
+                  <?php for ($i=0; $i < 2; $i++) {
+                     echo $sample_html;
+                  } ?>
+               </div>
+            </div>
+            <div id="level-5" class="level row expanded" data-title="Test Title 5">
+               <div class="row expanded">
+                  Lorem ipsum dolor sit amet.
+                  <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
+
+               </div>
+            </div>
+         </div>
+      </div>
 
 
-      <nav id="level-menu" style="">
-         <ul>
-            <li class="hidden">
-               <a href="#">
-                  Test Title
-               </a>
-            </li>
-         </ul>
-      </nav>
+   </div>
 
 
-      <script src="bower_components/jquery/dist/jquery.js"></script>
-      <script src="bower_components/what-input/what-input.js"></script>
-      <script src="bower_components/foundation-sites/dist/foundation.js"></script>
-      <script src="bower_components/jquery-mousewheel/jquery.mousewheel.min.js"></script>
 
-      <!-- Pointer Events Polyfill: -->
-      <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+   <nav id="level-menu" style="">
+      <ul>
+         <li class="hidden">
+            <a href="#">
+               Test Title
+            </a>
+         </li>
+      </ul>
+   </nav>
 
-      <script src="js/app.js"></script>
-   </body>
-   </html>
+
+   <script src="bower_components/jquery/dist/jquery.js"></script>
+   <script src="bower_components/what-input/what-input.js"></script>
+   <script src="bower_components/foundation-sites/dist/foundation.js"></script>
+   <script src="bower_components/jquery-mousewheel/jquery.mousewheel.min.js"></script>
+
+   <!-- Pointer Events Polyfill: -->
+   <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+
+   <script src="js/app.js"></script>
+</body>
+</html>
