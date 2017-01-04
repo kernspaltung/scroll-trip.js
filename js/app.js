@@ -1,12 +1,12 @@
 window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       ||
-  window.webkitRequestAnimationFrame ||
-  window.mozRequestAnimationFrame    ||
-  window.oRequestAnimationFrame      ||
-  window.msRequestAnimationFrame     ||
-  function( callback ){
-    window.setTimeout(callback, 1000 / 60);
-  };
+   return  window.requestAnimationFrame       ||
+   window.webkitRequestAnimationFrame ||
+   window.mozRequestAnimationFrame    ||
+   window.oRequestAnimationFrame      ||
+   window.msRequestAnimationFrame     ||
+   function( callback ){
+      window.setTimeout(callback, 1000 / 60);
+   };
 })();
 
 $(document).foundation()
@@ -37,6 +37,34 @@ $(document).ready(function(){
    setupScroll()
 
    setupResize()
+
+   $('.level').each(function(){
+
+      title = $(this).data('title')
+
+      list = $('#level-menu ul')
+
+      model = $('#level-menu li.hidden')
+
+      copy = model.clone().detach().removeClass('hidden');
+
+      copy.find('a').html( title )
+
+      $('#level-menu ul').append( copy );
+
+      copy.click(function(){
+         var i = $(this).index() - 1
+
+         console.log(scrollLengths[i].start);
+
+         scrollTotal = scrollLengths[i].start + 1;
+
+         scrollTravel();
+
+      })
+
+
+   })
 
 
 })
@@ -96,14 +124,14 @@ function setupScroll() {
    $('.scroll-container').on("pointerdown", function(event) {
 
       draggingPointer = true
-console.log(startY, startX );
+      console.log(startY, startX );
       startY = event.pageY
       startX = event.pageX
 
    });
 
    $('.scroll-container').on("pointermove", function(event) {
-console.log("move");
+      console.log("move");
       //
       // startY = event.pageY
       // startX = event.pageX
@@ -182,7 +210,6 @@ function getTotalScrollHeight() {
    })
 
 
-
    return totalHeight
 }
 
@@ -208,7 +235,7 @@ function scrollTravel() {
 
    for( i in scrollLengths ) {
 
-         if( scrollTotal > scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
+      if( scrollTotal > scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
 
          nextElementIndex = i;
 
