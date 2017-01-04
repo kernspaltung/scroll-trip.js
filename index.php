@@ -41,7 +41,7 @@ ob_end_clean();
 
 <body>
 
-   <div id="scroll-container" class="scroll-container" touch-action="pan-x">
+   <div id="scroll-container" class="scroll-container" touch-action="none">
 
 
 
