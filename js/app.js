@@ -9,7 +9,7 @@ window.requestAnimFrame = (function(){
    };
 })();
 
-$(document).foundation()
+// $(document).foundation()
 
 scrollLengths = []
 isScrolling = false
@@ -17,13 +17,15 @@ lastScrollTop = 0
 scrollAmount = 0
 step = 100
 scrollContainer = $('.scroll-container')
-currentElementIndex = -1
+currentElementIndex = 0
 
 scrollTotal = 0
 startY = 0
 startX = 0
 nextElementIndex = 0
-$(document).ready(function(){
+scrollSpeed = 700
+
+// $(document).ready(function(){
 
 
    totalHeight = getTotalScrollHeight();
@@ -56,9 +58,6 @@ $(document).ready(function(){
          var i = $(this).index() - 1
 
 
-
-         console.log(scrollLengths[i].start);
-
          scrollTotal = scrollLengths[i].start + 1;
 
          scrollTravel();
@@ -69,7 +68,7 @@ $(document).ready(function(){
    })
 
 
-})
+// })
 
 
 
@@ -85,9 +84,9 @@ function setupScroll() {
 
 
    if( scrollContainer.height() >= scrollContainer.width() ) {
-      scrollStep = scrollContainer.height() * 1.5
+      scrollStep = scrollContainer.height() * 0.85
    } else {
-      scrollStep = scrollContainer.width() * 1.5
+      scrollStep = scrollContainer.width() * 0.85
    }
 
 
@@ -200,7 +199,8 @@ function getTotalScrollHeight() {
 
       scrollLengths.push({
          start: totalHeight,
-         size: scrollLength
+         size: scrollLength,
+         doneScrolling: false
       })
 
       totalHeight += scrollLength
@@ -231,13 +231,10 @@ function scrollTravel() {
 
    scrollPct = ( Math.min(totalHeight, scrollTotal) / totalHeight )
 
-   // temporary solution: map 0-1.0 range between levels equally.
-   // TO-DO: select element considering element width
-
 
    for( i in scrollLengths ) {
 
-      if( scrollTotal > scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
+      if( scrollTotal >= scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
 
          nextElementIndex = i;
          index = parseInt(i)+1
@@ -245,7 +242,7 @@ function scrollTravel() {
          $('#level-menu li').removeClass('active')
          .eq( index ).addClass('active')
 
-         
+
          break;
 
       }
@@ -254,21 +251,48 @@ function scrollTravel() {
 
 
    // nextElementIndex = Math.floor(scrollPct * $('.level').length)
+
+            console.log("diff", currentElementIndex , nextElementIndex, scrollTotal);
+
    nextElement = $('.level').eq( nextElementIndex )
 
    if( currentElementIndex !== nextElementIndex) {
 
+      if( currentElementIndex >= 0  ) {
+            console.log("done?", scrollLengths[ currentElementIndex ].doneScrolling)
+         if( ! scrollLengths[ currentElementIndex ].doneScrolling ) {
 
-      nextHeight = $('.level').first().outerHeight() * nextElementIndex
+            scrollLengths[ currentElementIndex ].doneScrolling = true
 
-      nextHeight *= -1
+            currentElement = $('.level').eq( currentElementIndex )
+            scrollToPct = (scrollLengths[currentElementIndex].start+scrollLengths[currentElementIndex].length-1) / totalHeight
+            // scrollTotal = scrollToPct
 
-      $('.travel').stop().animate({
-         marginTop: nextHeight
-      })
+            offsetLeft = currentElement.outerWidth() . scrollContainer.width();
 
+            currentElement.stop().animate({ left: - offsetLeft }, scrollSpeed)
+
+
+         } else {
+
+
+            nextHeight = $('.level').first().outerHeight() * nextElementIndex
+
+            nextHeight *= -1
+
+            $('.travel').stop().animate({
+               marginTop: nextHeight
+            }, scrollSpeed)
+
+            scrollLengths[ currentElementIndex ].doneScrolling = false
+            currentElementIndex = nextElementIndex
+
+
+         }
+
+
+      }
    } else {
-
 
       scrollBeforePct = scrollLengths[nextElementIndex].start / totalHeight
 
@@ -281,9 +305,9 @@ function scrollTravel() {
          // extraWidth = $('.level').width() - scrollContainer.width()
          //
          // horizontalScrollTotal = scrollContainer.width() + extraWidth
-         offsetLeft = scrollInLevel * ( nextElement.outerWidth() - scrollContainer.width() )
+         offsetLeft = scrollInLevel * ( nextElement.innerWidth() - scrollContainer.outerWidth() )
 
-         nextElement.stop().animate({ left: - offsetLeft });
+         nextElement.stop().animate({ left: - offsetLeft }, scrollSpeed );
 
       }
 
@@ -293,10 +317,13 @@ function scrollTravel() {
 
       // console.log( nextElement.width() );
 
+      currentElementIndex = nextElementIndex
 
    }
 
-   currentElementIndex = nextElementIndex
+   // console.log(currentElementIndex);
+
+
 
    // console.log( totalHeight , Math.min(totalHeight, scrollTotal) )
 
