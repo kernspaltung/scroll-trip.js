@@ -1,30 +1,3 @@
-<?php
-
-
-// test content to use later:
-ob_start();
-
-?>
-
-<div class="columns small-3">
-   <small>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor, a.
-   </small>
-</div>
-<div class="test-container columns small-3 panel">
-   <a href="#">
-      Link
-   </a>
-   <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
-</div>
-
-<?php
-$sample_html = ob_get_contents();
-ob_end_clean();
-
-?>
-
-
 <!doctype html>
 <html class="no-js" lang="en">
 <head>
@@ -59,21 +32,53 @@ ob_end_clean();
 
                </div>
             </div>
+
             <div id="level-1" class="level row expanded" data-title="Test Title 1">
                <div class="row expanded">
-                  <?php for ($i=0; $i < 2; $i++) {
-                     echo $sample_html;
-                  } ?>
+
+                  <div class="columns small-3 text-center">
+                     1
+                  </div>
+                  <div class="columns small-3 text-center">
+                     2
+                  </div>
+                  <div class="columns small-3 text-center">
+                     3
+                  </div>
+                  <div class="columns small-3 text-center">
+                     4
+                  </div>
+
                </div>
 
             </div>
-            <div id="level-2" class="level row expanded" data-title="Test Title 2">
+
+            <div id="level-2" class="level row expanded" data-title="Test Title 1">
                <div class="row expanded">
-                  <?php for ($i=0; $i < 2; $i++) {
-                     echo $sample_html;
-                  } ?>
+
+                  <div class="columns small-2 text-center">
+                     1
+                  </div>
+                  <div class="columns small-2 text-center">
+                     2
+                  </div>
+                  <div class="columns small-2 text-center">
+                     3
+                  </div>
+                  <div class="columns small-2 text-center">
+                     4
+                  </div>
+                  <div class="columns small-2 text-center">
+                     5
+                  </div>
+                  <div class="columns small-2 text-center">
+                     6
+                  </div>
+
                </div>
+
             </div>
+
             <div id="level-3" class="level row expanded" data-title="Test Title 3">
                <div class="row expanded">
                   Lorem ipsum dolor sit amet.
@@ -81,6 +86,7 @@ ob_end_clean();
 
                </div>
             </div>
+            <!--
             <div id="level-4" class="level row expanded" data-title="Test Title 4">
                <div class="row expanded">
                   <?php for ($i=0; $i < 2; $i++) {
@@ -95,6 +101,7 @@ ob_end_clean();
 
                </div>
             </div>
+             -->
          </div>
       </div>
 

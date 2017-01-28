@@ -55,6 +55,7 @@
 
 * {
    box-sizing: border-box;
+   outline: 1px solid #def;
 }
 
 
@@ -123,11 +124,11 @@ body {
    width: $container_width * 3;
 }
 #level-2 {
-   width: $container_width * 4;
+   width: $container_width * 2;
 }
-#level-4 {
-   width: $container_width * 6;
-}
+// #level-4 {
+//    width: $container_width * 6;
+// }
 #level-0,
 #level-3,
 #level-5 {

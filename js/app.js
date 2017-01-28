@@ -1,3 +1,8 @@
+
+var levels
+var currentLevel
+var currentLevel
+
 window.requestAnimFrame = (function(){
    return  window.requestAnimationFrame       ||
    window.webkitRequestAnimationFrame ||
@@ -17,13 +22,17 @@ lastScrollTop = 0
 scrollAmount = 0
 step = 100
 scrollContainer = $('.scroll-container')
-currentElementIndex = -1
+currentLevelIndex = 0
 
 scrollTotal = 0
 startY = 0
 startX = 0
-nextElementIndex = 0
+nextLevelIndex = 0
+
+
 $(document).ready(function(){
+
+
 
 
    totalHeight = getTotalScrollHeight();
@@ -40,36 +49,17 @@ $(document).ready(function(){
 
    $('.level').each(function(){
 
-      title = $(this).data('title')
 
-      list = $('#level-menu ul')
-
-      model = $('#level-menu li.hidden')
-
-      copy = model.clone().detach().removeClass('hidden');
-
-      copy.find('a').html( title )
-
-      $('#level-menu ul').append( copy );
-
-      copy.click(function(){
-         var i = $(this).index() - 1
-
-
-
-         console.log(scrollLengths[i].start);
-
-         scrollTotal = scrollLengths[i].start + 1;
-
-         scrollTravel();
-
-      })
-
+      addLevelToMenu($(this))
 
    })
 
 
+   createStructure()
+
+goTo(2,4)
 })
+
 
 
 
@@ -89,6 +79,7 @@ function setupScroll() {
    } else {
       scrollStep = scrollContainer.width() * 1.5
    }
+
 
 
    $('.scroll-container').on("pointerup", function(event) {
@@ -171,6 +162,272 @@ function setupScroll() {
 
 
 
+
+
+function scrollTravel() {
+
+   // var scrollTotal = scrollContainer.scrollTotal()
+   // console.log(scrollTotal);
+
+   // $('.travel').stop().animate({
+   //    marginLeft: (scrollAmount * 200)
+   // })
+
+   scrollPct = ( Math.min(totalHeight, scrollTotal) / totalHeight )
+
+
+   for( i in scrollLengths ) {
+
+      if( scrollTotal >= scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
+
+         nextLevelIndex = i
+
+         index = parseInt(i)+1
+
+         $('#level-menu li').removeClass('active')
+
+         .eq( index ).addClass('active')
+
+         break
+
+      }
+
+   }
+
+
+
+   // nextLevelIndex = Math.floor(scrollPct * $('.level').length)
+
+   // console.log("diff", currentLevelIndex , nextLevelIndex, scrollTotal)
+
+   nextLevel = $('.level').eq( nextLevelIndex )
+
+   if( currentLevelIndex !== nextLevelIndex) {
+
+      if( currentLevelIndex >= 0  ) {
+
+         // console.log("done?", scrollLengths[ currentLevelIndex ].doneScrolling)
+
+         if( ! scrollLengths[ currentLevelIndex ].doneScrolling ) {
+
+            console.log("Done!");
+
+            scrollLengths[ currentLevelIndex ].doneScrolling = true
+
+            currentLevel = $('.level').eq( currentLevelIndex )
+
+            scrollToPct = (scrollLengths[currentLevelIndex].start+scrollLengths[currentLevelIndex].length-1) / totalHeight
+            // scrollTotal = scrollToPct
+
+            offsetLeft = currentLevel.outerWidth() - scrollContainer.width()
+
+            currentLevel.stop().animate({ left: - offsetLeft })
+
+
+         } else {
+
+            scrollLengths[ currentLevelIndex ].doneScrolling = false
+
+            nextHeight = $('.level').first().outerHeight() * nextLevelIndex
+
+            nextHeight *= -1
+
+            $('.travel').stop().animate({
+               marginTop: nextHeight
+            })
+
+            scrollLengths[ currentLevelIndex ].doneScrolling = false
+            currentLevelIndex = nextLevelIndex
+            nextLevel = $('.level').eq(nextLevelIndex)
+
+            console.log("nextLevel",nextLevel.children().first().children());
+            if(nextLevel.length>0) {
+               numChildren = nextLevel.children().first().children().length
+               if(numChildren>1) {
+
+
+                  scrollStep = nextLevel.width() / numChildren
+                  scrollStep *= 2
+                  scrollStep = Math.max( scrollContainer.width(), scrollStep)
+                  console.log("scrollStep",scrollStep)
+
+               }
+            }
+
+            currentLevel = $('.level').eq( currentLevelIndex )
+
+
+
+         }
+
+
+      }
+   } else {
+
+      scrollBeforePct = scrollLengths[nextLevelIndex].start / totalHeight
+
+      scrollInLevelPct = scrollPct - scrollBeforePct
+
+      scrollInLevel = scrollInLevelPct / ( scrollLengths[nextLevelIndex].size / totalHeight )
+
+      if( nextLevel.width() > scrollContainer.width() ) {
+
+         // extraWidth = $('.level').width() - scrollContainer.width()
+         //
+         // horizontalScrollTotal = scrollContainer.width() + extraWidth
+         offsetLeft = scrollInLevel * ( nextLevel.innerWidth() - scrollContainer.outerWidth() )
+
+         nextLevel.stop().animate({ left: - offsetLeft })
+
+      }
+
+
+
+      // offsetLeft = nextLevel.width() - scrollContainer.width() / totalHeight;
+
+      // console.log( nextLevel.width() );
+
+      currentLevelIndex = nextLevelIndex
+
+   }
+
+   // console.log(currentLevelIndex);
+
+
+
+   // console.log( totalHeight , Math.min(totalHeight, scrollTotal) )
+
+
+   lastScrollTop = scrollTotal
+
+
+}
+
+
+
+function addLevelToMenu( level ) {
+
+   title = level.data('title')
+
+   list = $('#level-menu ul')
+
+   model = $('#level-menu li.hidden')
+
+   copy = model.clone().detach().removeClass('hidden');
+
+   copy.find('a').html( title )
+
+   $('#level-menu ul').append( copy );
+
+   copy.click(function(){
+
+      goTo( level.index(), 0 )
+
+   })
+
+}
+
+
+
+
+
+
+function goTo( levelIndex, elementIndex ) {
+
+   // console.log( levels )
+   currentLevel = $('.level').eq(levelIndex)
+   nextLevel = currentLevel
+
+   nextHeight = $('.level').first().outerHeight() * levelIndex
+
+   nextHeight *= -1
+
+   offsetLeft = 0
+
+totalScrolled = nextHeight
+
+
+   if( (elementIndex in levels[levelIndex].children) ) {
+
+      currentElementIndex = elementIndex
+      nextElementIndex = elementIndex
+
+      for (var i = 0; i < elementIndex; i++) {
+         offsetLeft += levels[levelIndex].children[i].width
+      }
+
+      offsetLeft = Math.min( offsetLeft, currentLevel.width() - scrollContainer.width() )
+
+      totalScrolled += offsetLeft
+
+   }
+
+   scrollTotal = totalScrolled
+
+   $('.travel').stop().animate({
+
+      marginTop: nextHeight
+
+   },600, function(){
+
+      if( offsetLeft > 0 ) {
+
+         currentLevel.stop().animate({ left: - offsetLeft }, 600)
+
+      }
+
+   })
+
+
+
+}
+
+
+
+
+function createStructure() {
+
+   levels = []
+
+   $('.level').each(function(){
+
+      level = $(this)
+
+      title = level.data('title')
+
+      width = level.width
+
+      children_elements = level.children().first().children()
+
+      children = []
+
+      if( children_elements.length > 1 ) {
+
+         children_elements.each( function() {
+
+            var child_element = $(this)
+
+            children.push({
+               title: child_element.data('title'),
+               width: child_element.width()
+            })
+
+         })
+      }
+
+      levels.push({
+         title: title,
+         width: width,
+         children: children
+      })
+
+   })
+
+}
+
+
+
+
 function getTotalScrollHeight() {
 
    var items = $('.level')
@@ -191,16 +448,19 @@ function getTotalScrollHeight() {
 
       // if( $(this).width() > scrollContainer.width() ) {
 
-      scrollLength += $(this).width()
+      scrollLength += $(this).width()// #level-4 {
+//    width: $container_width * 6;
+// }
 
       // }
 
-      $(this).attr('data-scroll-length', scrollLength);
+      $(this).attr('data-scroll-length', scrollLength)
 
 
       scrollLengths.push({
          start: totalHeight,
-         size: scrollLength
+         size: scrollLength,
+         doneScrolling: false
       })
 
       totalHeight += scrollLength
@@ -213,95 +473,5 @@ function getTotalScrollHeight() {
 
 
    return totalHeight
-}
-
-
-
-
-
-
-function scrollTravel() {
-
-   // var scrollTotal = scrollContainer.scrollTotal()
-   // console.log(scrollTotal);
-
-   // $('.travel').stop().animate({
-   //    marginLeft: (scrollAmount * 200)
-   // })
-
-   scrollPct = ( Math.min(totalHeight, scrollTotal) / totalHeight )
-
-   // temporary solution: map 0-1.0 range between levels equally.
-   // TO-DO: select element considering element width
-
-
-   for( i in scrollLengths ) {
-
-      if( scrollTotal > scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
-
-         nextElementIndex = i;
-         index = parseInt(i)+1
-
-         $('#level-menu li').removeClass('active')
-         .eq( index ).addClass('active')
-
-         
-         break;
-
-      }
-
-   }
-
-
-   // nextElementIndex = Math.floor(scrollPct * $('.level').length)
-   nextElement = $('.level').eq( nextElementIndex )
-
-   if( currentElementIndex !== nextElementIndex) {
-
-
-      nextHeight = $('.level').first().outerHeight() * nextElementIndex
-
-      nextHeight *= -1
-
-      $('.travel').stop().animate({
-         marginTop: nextHeight
-      })
-
-   } else {
-
-
-      scrollBeforePct = scrollLengths[nextElementIndex].start / totalHeight
-
-      scrollInLevelPct = scrollPct - scrollBeforePct
-
-      scrollInLevel = scrollInLevelPct / ( scrollLengths[nextElementIndex].size / totalHeight )
-
-      if( nextElement.width() > scrollContainer.width() ) {
-
-         // extraWidth = $('.level').width() - scrollContainer.width()
-         //
-         // horizontalScrollTotal = scrollContainer.width() + extraWidth
-         offsetLeft = scrollInLevel * ( nextElement.outerWidth() - scrollContainer.width() )
-
-         nextElement.stop().animate({ left: - offsetLeft });
-
-      }
-
-
-
-      // offsetLeft = nextElement.width() - scrollContainer.width() / totalHeight;
-
-      // console.log( nextElement.width() );
-
-
-   }
-
-   currentElementIndex = nextElementIndex
-
-   // console.log( totalHeight , Math.min(totalHeight, scrollTotal) )
-
-
-   lastScrollTop = scrollTotal
-
 
 }
