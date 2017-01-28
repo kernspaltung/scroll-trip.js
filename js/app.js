@@ -14,7 +14,7 @@ window.requestAnimFrame = (function(){
    };
 })();
 
-$(document).foundation()
+// $(document).foundation()
 
 scrollLengths = []
 isScrolling = false
@@ -75,9 +75,9 @@ function setupScroll() {
 
 
    if( scrollContainer.height() >= scrollContainer.width() ) {
-      scrollStep = scrollContainer.height() * 1.5
+      scrollStep = scrollContainer.height() * 0.85
    } else {
-      scrollStep = scrollContainer.width() * 1.5
+      scrollStep = scrollContainer.width() * 0.85
    }
 
 
