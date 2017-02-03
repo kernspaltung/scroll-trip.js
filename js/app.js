@@ -55,9 +55,8 @@ $(document).ready(function(){
    })
 
 
-   createStructure()
+   levels = createStructure()
 
-goTo(2,4)
 })
 
 
@@ -340,6 +339,7 @@ function addLevelToMenu( level ) {
 
 function goTo( levelIndex, elementIndex ) {
 
+   levels = createStructure()
    // console.log( levels )
    currentLevel = $('.level').eq(levelIndex)
    nextLevel = currentLevel
@@ -350,7 +350,7 @@ function goTo( levelIndex, elementIndex ) {
 
    offsetLeft = 0
 
-totalScrolled = nextHeight
+   totalScrolled = nextHeight
 
 
    if( (elementIndex in levels[levelIndex].children) ) {
@@ -393,7 +393,7 @@ totalScrolled = nextHeight
 
 function createStructure() {
 
-   levels = []
+   levelsArray = []
 
    $('.level').each(function(){
 
@@ -421,13 +421,15 @@ function createStructure() {
          })
       }
 
-      levels.push({
+      levelsArray.push({
          title: title,
          width: width,
          children: children
       })
 
    })
+
+   return levelsArray
 
 }
 
