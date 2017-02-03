@@ -216,7 +216,7 @@ function scrollTravel() {
             currentLevel = $('.level').eq( currentLevelIndex )
 
             offsetLeft = 0
-            
+
             if( nextLevelIndex > currentLevelIndex ) {
                scrollToPct = (scrollLengths[currentLevelIndex].start+scrollLengths[currentLevelIndex].length-1) / totalHeight
                offsetLeft = currentLevel.outerWidth() - scrollContainer.width()
@@ -355,7 +355,7 @@ function goTo( levelIndex, elementIndex ) {
 
 
    if( (elementIndex in levels[levelIndex].children) ) {
-
+console.log("if!");
       currentElementIndex = elementIndex
       nextElementIndex = elementIndex
 
@@ -368,7 +368,7 @@ function goTo( levelIndex, elementIndex ) {
       totalScrolled += offsetLeft
 
    }
-
+console.log(offsetLeft);
    scrollTotal = totalScrolled
 
    $('.travel').stop().animate({
