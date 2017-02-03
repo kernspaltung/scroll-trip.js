@@ -377,11 +377,7 @@ console.log("anim", nextHeight, offsetLeft);
 
    },600, function(){
 
-      if( offsetLeft > 0 ) {
-
          currentLevel.stop().animate({ left: - offsetLeft }, 600)
-
-      }
 
    })
 
