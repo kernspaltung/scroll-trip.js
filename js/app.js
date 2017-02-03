@@ -216,10 +216,16 @@ function scrollTravel() {
 
             currentLevel = $('.level').eq( currentLevelIndex )
 
-            scrollToPct = (scrollLengths[currentLevelIndex].start+scrollLengths[currentLevelIndex].length-1) / totalHeight
+            if( nextLevelIndex > currentLevelIndex ) {
+               scrollToPct = (scrollLengths[currentLevelIndex].start+scrollLengths[currentLevelIndex].length-1) / totalHeight
+               offsetLeft = currentLevel.outerWidth() - scrollContainer.width()
+            }
+            if( nextLevelIndex < currentLevelIndex ) {
+               scrollToPct = (scrollLengths[currentLevelIndex].start) / totalHeight
+               offsetLeft = 0
+            }
             // scrollTotal = scrollToPct
 
-            offsetLeft = currentLevel.outerWidth() - scrollContainer.width()
 
             currentLevel.stop().animate({ left: - offsetLeft })
 
@@ -317,7 +323,7 @@ function addLevelToMenu( level ) {
 
    copy.find('a').html( title )
 
-   $('#level-menu ul').append( copy );
+   $('#level-menu ul').append( copy )
 
    copy.click(function(){
 
