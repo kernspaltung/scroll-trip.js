@@ -215,13 +215,14 @@ function scrollTravel() {
 
             currentLevel = $('.level').eq( currentLevelIndex )
 
+            offsetLeft = 0
+            
             if( nextLevelIndex > currentLevelIndex ) {
                scrollToPct = (scrollLengths[currentLevelIndex].start+scrollLengths[currentLevelIndex].length-1) / totalHeight
                offsetLeft = currentLevel.outerWidth() - scrollContainer.width()
             }
             if( nextLevelIndex < currentLevelIndex ) {
                scrollToPct = (scrollLengths[currentLevelIndex].start) / totalHeight
-               offsetLeft = 0
             }
             // scrollTotal = scrollToPct
 
