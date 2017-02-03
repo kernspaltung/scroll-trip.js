@@ -368,7 +368,7 @@ console.log("if!");
       totalScrolled += offsetLeft
 
    }
-console.log(offsetLeft);
+console.log("anim", nextHeight, offsetLeft);
    scrollTotal = totalScrolled
 
    $('.travel').stop().animate({
