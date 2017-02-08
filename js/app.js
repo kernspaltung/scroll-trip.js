@@ -141,7 +141,7 @@ function setupScroll() {
 
             scrollTravel()
 
-         }, 200 )
+         }, 150 )
 
       }
 
@@ -222,7 +222,7 @@ function scrollTravel() {
             // scrollTotal = scrollToPct
 
 
-            currentLevel.stop().animate({ left: - offsetLeft })
+            currentLevel.stop().animate({ left: - offsetLeft },1200)
 
 
          } else {
@@ -236,7 +236,7 @@ function scrollTravel() {
 
             $('.travel').stop().animate({
                marginTop: nextHeight
-            })
+            },1200)
 
 
             scrollLengths[ currentLevelIndex ].doneScrolling = false
@@ -282,7 +282,7 @@ function scrollTravel() {
          // horizontalScrollTotal = scrollContainer.width() + extraWidth
          offsetLeft = scrollInLevel * ( nextLevel.innerWidth() - scrollContainer.outerWidth() )
 
-         nextLevel.stop().animate({ left: - offsetLeft })
+         nextLevel.stop().animate({ left: - offsetLeft },1200)
 
       }
 
@@ -348,7 +348,7 @@ function goTo( levelIndex, elementIndex ) {
 
    nextLevel = currentLevel
 
-   loadLevelImage( nextLevel )
+   scrollTravel( nextLevel )
 
    nextHeight = $('.level').first().outerHeight() * levelIndex
 
@@ -378,17 +378,18 @@ function goTo( levelIndex, elementIndex ) {
 console.log("anim", nextHeight, offsetLeft);
    scrollTotal = totalScrolled
 
+
    $('.travel').stop().animate({
 
       marginTop: nextHeight
 
-   },600, function(){
+   },1200, function(){
 
          currentLevel.stop().animate({ left: - offsetLeft }, 600)
 
    })
 
-
+   scrollTravel()
 
 }
 
@@ -524,9 +525,9 @@ function loadLevelImage( level ) {
 
             opacity: 1
 
-         }, 300, function(){
+         }, 600, function(){
             image.addClass('scroll-trip-bg')
-            lastimage.removeClass('scroll-trip-bg').fadeOut(300,function(){
+            lastimage.removeClass('scroll-trip-bg').fadeOut(600,function(){
                lastimage.remove()
             })
 
