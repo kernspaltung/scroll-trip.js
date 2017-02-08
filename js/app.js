@@ -32,16 +32,11 @@ nextLevelIndex = 0
 
 $(document).ready(function(){
 
-
-
-
    totalHeight = getTotalScrollHeight();
 
    // var tcw = $('.travel').css({ left: - ( width / 2 ) })
 
    $('.empty-height-container').height( totalHeight )
-
-
 
    setupScroll()
 
@@ -49,13 +44,13 @@ $(document).ready(function(){
 
    $('.level').each(function(){
 
-
       addLevelToMenu($(this))
 
    })
 
-
    levels = createStructure()
+
+   scrollTravel()
 
 })
 
@@ -181,7 +176,7 @@ function scrollTravel() {
 
          nextLevelIndex = i
 
-         index = parseInt(i)+1
+         index = parseInt(i) + 1
 
          $('.current-menu li').removeClass('active')
 
@@ -238,13 +233,17 @@ function scrollTravel() {
 
             nextHeight *= -1
 
+
             $('.travel').stop().animate({
                marginTop: nextHeight
             })
 
+
             scrollLengths[ currentLevelIndex ].doneScrolling = false
             currentLevelIndex = nextLevelIndex
             nextLevel = $('.level').eq(nextLevelIndex)
+
+            loadLevelImage( nextLevel )
 
             console.log("nextLevel",nextLevel.children().first().children());
             if(nextLevel.length>0) {
@@ -345,8 +344,11 @@ function goTo( levelIndex, elementIndex ) {
 
    levels = createStructure()
    // console.log( levels )
-   currentLevel = $('.level').eq(levelIndex)
+   currentLevel = $('.level').eq( levelIndex )
+
    nextLevel = currentLevel
+
+   loadLevelImage( nextLevel )
 
    nextHeight = $('.level').first().outerHeight() * levelIndex
 
@@ -358,9 +360,11 @@ function goTo( levelIndex, elementIndex ) {
 
 
    if( (elementIndex in levels[levelIndex].children) ) {
-console.log("if!");
+
       currentElementIndex = elementIndex
       nextElementIndex = elementIndex
+
+
 
       for (var i = 0; i < elementIndex; i++) {
          offsetLeft += levels[levelIndex].children[i].width
@@ -481,5 +485,55 @@ function getTotalScrollHeight() {
 
 
    return totalHeight
+
+}
+
+
+
+function loadLevelImage( level ) {
+
+   var imagesrc = level.data('image')
+
+   if(imagesrc != ""
+      ||
+      imagesrc != "undefined") {
+
+         image = $('<div>')
+
+         img = $('<img>').attr('src', imagesrc )
+
+         image.addClass('imgLiquidFill')
+
+         image.append( img )
+
+         lastimage = $('.scroll-trip-bg')
+
+         image.css({
+            position: 'absolute',
+            top:     0,
+            left:    0,
+            width:   $('.scroll-container').innerWidth(),
+            height:  $('.scroll-container').innerHeight(),
+            zIndex:  -1,
+            opacity: 0
+         })
+
+         $('#scroll-container').prepend( image )
+
+         image.stop().animate({
+
+            opacity: 1
+
+         }, 300, function(){
+            image.addClass('scroll-trip-bg')
+            lastimage.removeClass('scroll-trip-bg').fadeOut(300,function(){
+               lastimage.remove()
+            })
+
+         })
+
+         image.imgLiquid()
+
+   }
 
 }
