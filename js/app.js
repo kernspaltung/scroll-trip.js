@@ -183,7 +183,7 @@ function scrollTravel() {
 
          index = parseInt(i)+1
 
-         $('#level-menu li').removeClass('active')
+         $('.current-menu li').removeClass('active')
 
          .eq( index ).addClass('active')
 
@@ -315,17 +315,20 @@ function addLevelToMenu( level ) {
 
    title = level.data('title')
 
-   list = $('#level-menu ul')
+   list = $('.current-menu ul')
 
-   model = $('#level-menu li.hidden')
+   model = $('.current-menu li.hidden')
 
    copy = model.clone().detach().removeClass('hidden');
 
    copy.find('a').html( title )
 
-   $('#level-menu ul').append( copy )
+   $('.current-menu ul').append( copy )
 
    copy.click(function(){
+
+      $(this).addClass('active')
+      .siblings().removeClass('active')
 
       goTo( level.index(), 0 )
 
