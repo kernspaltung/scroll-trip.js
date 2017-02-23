@@ -124,7 +124,7 @@ body {
    width: $container_width * 3;
 }
 #level-2 {
-   width: $container_width * 2;
+   width: $container_width * 2.5;
 }
 // #level-4 {
 //    width: $container_width * 6;
@@ -248,4 +248,23 @@ p {
    -moz-user-select: text;
    -o-user-select: text;
    user-select: text;
+}
+
+
+
+#scroll-indicator {
+   position: absolute;
+   top: 0;
+   right: 0;
+   height: 100vh;
+   width: 4px;
+   background-color: #000;
+   z-index: 9999;
+}
+
+#scroll-indicator .bar {
+   height: 0;
+   width: 4px;
+   background-color: #fa0;
+   transition: height 0.3s ease-in-out;
 }

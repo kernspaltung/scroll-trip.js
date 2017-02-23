@@ -19,17 +19,17 @@
 
 
 
-      <div class="empty-height-container">
+      <div class="curtain absUpL w-100 h-100 z-1 color-white-bg" style="opacity:0.5"></div>
 
-      </div>
+      <div class="empty-height-container"></div>
 
       <div class="travel-container">
+
          <div class="travel">
             <div id="level-0" class="level row expanded" data-title="Test Title 0" data-image="http://unsplash.it/1200x600?random=1&blur">
                <div class="row expanded">
                   Lorem ipsum dolor sit amet.
                   <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
-
                </div>
             </div>
 
@@ -119,6 +119,11 @@
          </li>
       </ul>
    </nav>
+
+
+   <div id="scroll-indicator">
+      <div class="bar"></div>
+   </div>
 
 
    <script src="bower_components/jquery/dist/jquery.js"></script>

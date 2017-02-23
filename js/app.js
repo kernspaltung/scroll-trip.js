@@ -18,6 +18,7 @@ window.requestAnimFrame = (function(){
 
 scrollLengths = []
 isScrolling = false
+gotMouseWheel = false
 lastScrollTop = 0
 scrollAmount = 0
 step = 100
@@ -50,7 +51,7 @@ $(document).ready(function(){
 
    levels = createStructure()
 
-   scrollTravel()
+   // scrollTravel()
 
 })
 
@@ -126,22 +127,23 @@ function setupScroll() {
    });
 
 
-
    $(window).on('mousewheel', function(event) {
+      if( ! gotMouseWheel ) {
 
-      if( ! isScrolling ) {
-
+         clearTimeout(isScrolling)
          isScrolling = setTimeout(function(){
-
-            isScrolling = false
-
             scrollTotal += - event.deltaY * scrollStep
             scrollTotal = Math.max( scrollTotal, 0 )
             scrollTotal = Math.min( scrollTotal, totalHeight )
-
             scrollTravel()
 
-         }, 200 )
+            isScrolling = false
+
+         }, 150 )
+
+         gotMouseWheel = setTimeout(function(){
+            gotMouseWheel = false
+         },100)
 
       }
 
@@ -159,6 +161,9 @@ function setupScroll() {
 
 
 function scrollTravel() {
+console.log("TrAVEL!");
+
+
 
    // var scrollTotal = scrollContainer.scrollTotal()
    // console.log(scrollTotal);
@@ -169,6 +174,7 @@ function scrollTravel() {
 
    scrollPct = ( Math.min(totalHeight, scrollTotal) / totalHeight )
 
+   $('#scroll-indicator .bar').height( $(window).height() * scrollPct )
 
    for( i in scrollLengths ) {
 
@@ -218,6 +224,7 @@ function scrollTravel() {
             }
             if( nextLevelIndex < currentLevelIndex ) {
                scrollToPct = (scrollLengths[currentLevelIndex].start) / totalHeight
+               offsetLeft = 0
             }
             // scrollTotal = scrollToPct
 
@@ -240,21 +247,27 @@ function scrollTravel() {
 
 
             scrollLengths[ currentLevelIndex ].doneScrolling = false
+
             currentLevelIndex = nextLevelIndex
+
             nextLevel = $('.level').eq(nextLevelIndex)
 
             loadLevelImage( nextLevel )
 
-            console.log("nextLevel",nextLevel.children().first().children());
+            // console.log("nextLevel",nextLevel.children().first().children());
+
             if(nextLevel.length>0) {
+
                numChildren = nextLevel.children().first().children().length
+
                if(numChildren>1) {
 
 
                   scrollStep = nextLevel.width() / numChildren
-                  scrollStep *= 2
+
+                  // scrollStep *= 2
                   scrollStep = Math.max( scrollContainer.width(), scrollStep)
-                  console.log("scrollStep",scrollStep)
+                  console.log("scrollStep::",scrollStep)
 
                }
             }
@@ -342,6 +355,7 @@ function goTo( levelIndex, elementIndex ) {
    levels = createStructure()
    // console.log( levels )
    currentLevel = $('.level').eq( levelIndex )
+   currentLevelIndex = levelIndex
 
    nextLevel = currentLevel
 
@@ -360,8 +374,6 @@ function goTo( levelIndex, elementIndex ) {
 
       currentElementIndex = elementIndex
       nextElementIndex = elementIndex
-
-
 
       for (var i = 0; i < elementIndex; i++) {
          offsetLeft += levels[levelIndex].children[i].width
@@ -385,7 +397,9 @@ console.log("anim", nextHeight, offsetLeft);
 
    })
 
-
+   scrollTotal = (scrollLengths[levelIndex].start + offsetLeft)
+console.log(scrollTotal);
+   scrollTravel()
 
 }
 
@@ -499,6 +513,7 @@ function loadLevelImage( level ) {
 
          img = $('<img>').attr('src', imagesrc )
 
+
          image.addClass('imgLiquidFill')
 
          image.append( img )
@@ -514,6 +529,8 @@ function loadLevelImage( level ) {
             zIndex:  -1,
             opacity: 0
          })
+
+
 
          $('#scroll-container').prepend( image )
 
