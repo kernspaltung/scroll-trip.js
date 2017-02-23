@@ -184,7 +184,7 @@ console.log("TrAVEL!");
 
          index = parseInt(i) + 1
 
-         $('#level-menu li').removeClass('active')
+         $('.current-menu li').removeClass('active')
 
          .eq( index ).addClass('active')
 
@@ -229,7 +229,7 @@ console.log("TrAVEL!");
             // scrollTotal = scrollToPct
 
 
-            currentLevel.stop().animate({ left: - offsetLeft })
+            currentLevel.stop().animate({ left: - offsetLeft },1200)
 
 
          } else {
@@ -243,7 +243,7 @@ console.log("TrAVEL!");
 
             $('.travel').stop().animate({
                marginTop: nextHeight
-            })
+            },1200)
 
 
             scrollLengths[ currentLevelIndex ].doneScrolling = false
@@ -295,7 +295,7 @@ console.log("TrAVEL!");
          // horizontalScrollTotal = scrollContainer.width() + extraWidth
          offsetLeft = scrollInLevel * ( nextLevel.innerWidth() - scrollContainer.outerWidth() )
 
-         nextLevel.stop().animate({ left: - offsetLeft })
+         nextLevel.stop().animate({ left: - offsetLeft },1200)
 
       }
 
@@ -327,17 +327,20 @@ function addLevelToMenu( level ) {
 
    title = level.data('title')
 
-   list = $('#level-menu ul')
+   list = $('.current-menu ul')
 
-   model = $('#level-menu li.hidden')
+   model = $('.current-menu li.hidden')
 
    copy = model.clone().detach().removeClass('hidden');
 
    copy.find('a').html( title )
 
-   $('#level-menu ul').append( copy )
+   $('.current-menu ul').append( copy )
 
    copy.click(function(){
+
+      $(this).addClass('active')
+      .siblings().removeClass('active')
 
       goTo( level.index(), 0 )
 
@@ -359,7 +362,7 @@ function goTo( levelIndex, elementIndex ) {
 
    nextLevel = currentLevel
 
-   loadLevelImage( nextLevel )
+   scrollTravel( nextLevel )
 
    nextHeight = $('.level').first().outerHeight() * levelIndex
 
@@ -387,18 +390,19 @@ function goTo( levelIndex, elementIndex ) {
 console.log("anim", nextHeight, offsetLeft);
    scrollTotal = totalScrolled
 
+
    $('.travel').stop().animate({
 
       marginTop: nextHeight
 
-   },600, function(){
+   },1200, function(){
 
          currentLevel.stop().animate({ left: - offsetLeft }, 600)
 
    })
 
    scrollTotal = (scrollLengths[levelIndex].start + offsetLeft)
-console.log(scrollTotal);
+
    scrollTravel()
 
 }
@@ -538,9 +542,9 @@ function loadLevelImage( level ) {
 
             opacity: 1
 
-         }, 300, function(){
+         }, 600, function(){
             image.addClass('scroll-trip-bg')
-            lastimage.removeClass('scroll-trip-bg').fadeOut(300,function(){
+            lastimage.removeClass('scroll-trip-bg').fadeOut(600,function(){
                lastimage.remove()
             })
 
