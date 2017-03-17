@@ -79,6 +79,46 @@
 
             </div>
 
+
+            <div id="level-scrollH" class="level horizontal-only row expanded" data-title="Horizontal" data-image="http://unsplash.it/1200x600?random=3">
+               <div class="">
+
+                  <div class="card-w text-center">
+                     A
+                  </div>
+                  <div class="card-w text-center">
+                     B
+                  </div>
+                  <div class="card-w text-center">
+                     C
+                  </div>
+                  <div class="card-w text-center">
+                     D
+                  </div>
+                  <div class="card-w text-center">
+                     E
+                  </div>
+                  <div class="card-w text-center">
+                     F
+                  </div>
+                  <div class="card-w text-center">
+                     G
+                  </div>
+                  <div class="card-w text-center">
+                     H
+                  </div>
+                  <div class="card-w text-center">
+                     I
+                  </div>
+                  <div class="card-w text-center">
+                     J
+                  </div>
+
+               </div>
+
+            </div>
+
+
             <div id="level-3" class="level row expanded" data-title="Test Title 3" data-image="http://unsplash.it/1200x600?random=4">
                <div class="row expanded">
                   Lorem ipsum dolor sit amet.
@@ -110,7 +150,7 @@
 
 
 
-   <nav id="level-menu" style="">
+   <nav id="level-menu" style="" class="current-menu">
       <ul>
          <li class="hidden">
             <a href="#">
@@ -121,9 +161,9 @@
    </nav>
 
 
-   <div id="scroll-indicator">
+   <section id="scroll-indicator">
       <div class="bar"></div>
-   </div>
+   </section>
 
 
    <script src="bower_components/jquery/dist/jquery.js"></script>

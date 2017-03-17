@@ -268,3 +268,20 @@ p {
    background-color: #fa0;
    transition: height 0.3s ease-in-out;
 }
+
+
+
+#level-scrollH {
+   width:100vw;
+   position: relative;
+   &>div {
+      // width: auto !important;
+      position: absolute;
+   }
+}
+
+.card-w {
+   width: 280px;
+   float: left;
+   display: inline-block;
+}

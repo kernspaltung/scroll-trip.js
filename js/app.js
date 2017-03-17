@@ -1,7 +1,11 @@
 
 var levels
 var currentLevel
-var currentLevel
+
+var travelAxis
+var travelDirection
+
+var scrollingHorizontalLevel
 
 window.requestAnimFrame = (function(){
    return  window.requestAnimationFrame       ||
@@ -43,6 +47,7 @@ $(document).ready(function(){
 
    setupResize()
 
+
    $('.level').each(function(){
 
       addLevelToMenu($(this))
@@ -50,6 +55,8 @@ $(document).ready(function(){
    })
 
    levels = createStructure()
+
+   setupHorizontalScrollWidth()
 
    // scrollTravel()
 
@@ -79,7 +86,7 @@ function setupScroll() {
 
    $('.scroll-container').on("pointerup", function(event) {
 
-      console.log("up", event.pageY, event.pageX );
+      // console.log("up", event.pageY, event.pageX );
 
       if( draggingPointer ){
 
@@ -88,9 +95,16 @@ function setupScroll() {
 
          if( Math.abs(startY - event.pageY) > Math.abs(startX - event.pageX ) ) {
             direction = startY - event.pageY
+            travelAxis = "vertical"
+            if( direction < 0 ) travelDirection = "up"
+            if( direction > 0 ) travelDirection = "down"
          } else {
             direction = startX - event.pageX
+            travelAxis = "horizontal"
+            if( direction < 0 ) travelDirection = "left"
+            if( direction > 0 ) travelDirection = "right"
          }
+
 
          direction = Math.max( -1, direction )
          direction = Math.min( 1, direction )
@@ -112,14 +126,14 @@ function setupScroll() {
    $('.scroll-container').on("pointerdown", function(event) {
 
       draggingPointer = true
-      console.log(startY, startX );
+      // console.log(startY, startX );
       startY = event.pageY
       startX = event.pageX
 
    });
 
    $('.scroll-container').on("pointermove", function(event) {
-      console.log("move");
+      // console.log("move");
       //
       // startY = event.pageY
       // startX = event.pageX
@@ -135,6 +149,17 @@ function setupScroll() {
             scrollTotal += - event.deltaY * scrollStep
             scrollTotal = Math.max( scrollTotal, 0 )
             scrollTotal = Math.min( scrollTotal, totalHeight )
+
+
+            travelAxis = "vertical";
+
+            if( event.deltaY === -1 ) {
+               travelDirection = "down";
+            }
+            if( event.deltaY === 1 ) {
+               travelDirection = "up";
+            }
+
             scrollTravel()
 
             isScrolling = false
@@ -161,16 +186,6 @@ function setupScroll() {
 
 
 function scrollTravel() {
-console.log("TrAVEL!");
-
-
-
-   // var scrollTotal = scrollContainer.scrollTotal()
-   // console.log(scrollTotal);
-
-   // $('.travel').stop().animate({
-   //    marginLeft: (scrollAmount * 200)
-   // })
 
    scrollPct = ( Math.min(totalHeight, scrollTotal) / totalHeight )
 
@@ -182,11 +197,7 @@ console.log("TrAVEL!");
 
          nextLevelIndex = i
 
-         index = parseInt(i) + 1
-
-         $('.current-menu li').removeClass('active')
-
-         .eq( index ).addClass('active')
+         console.log("scrolled into", i );
 
          break
 
@@ -195,22 +206,42 @@ console.log("TrAVEL!");
    }
 
 
-
-   // nextLevelIndex = Math.floor(scrollPct * $('.level').length)
-
-   // console.log("diff", currentLevelIndex , nextLevelIndex, scrollTotal)
-
    nextLevel = $('.level').eq( nextLevelIndex )
 
    if( currentLevelIndex !== nextLevelIndex) {
 
       if( currentLevelIndex >= 0  ) {
 
+         if( $('.level').eq( currentLevelIndex ).hasClass('horizontal-only') ) {
+
+            console.log("horizontal only!!!!", travelAxis )
+
+            if( travelAxis === "vertical" ) {
+               if( travelDirection === "up" ) {
+                  nextLevelIndex = parseInt(currentLevelIndex) - 1
+               }
+               if( travelDirection === "down" ) {
+                  nextLevelIndex = parseInt(currentLevelIndex) + 1
+               }
+
+               scrollLengths[ currentLevelIndex ].doneScrolling = true
+
+               scrollingHorizontalLevel = false
+               
+            } else {
+
+               scrollingHorizontalLevel = true
+
+            }
+
+         }
+
          // console.log("done?", scrollLengths[ currentLevelIndex ].doneScrolling)
+if( ! scrollingHorizontalLevel ) {
 
          if( ! scrollLengths[ currentLevelIndex ].doneScrolling ) {
 
-            console.log("Done!");
+            // console.log("Done!");
 
             scrollLengths[ currentLevelIndex ].doneScrolling = true
 
@@ -218,22 +249,25 @@ console.log("TrAVEL!");
 
             offsetLeft = 0
 
-            if( nextLevelIndex > currentLevelIndex ) {
-               scrollToPct = (scrollLengths[currentLevelIndex].start+scrollLengths[currentLevelIndex].length-1) / totalHeight
-               offsetLeft = currentLevel.outerWidth() - scrollContainer.width()
-            }
             if( nextLevelIndex < currentLevelIndex ) {
-               scrollToPct = (scrollLengths[currentLevelIndex].start) / totalHeight
+               scrollTotal = (scrollLengths[currentLevelIndex].start)
+               scrollToPct = scrollTotal / totalHeight
                offsetLeft = 0
             }
+            if( nextLevelIndex > currentLevelIndex ) {
+               scrollTotal = (scrollLengths[currentLevelIndex].start+scrollLengths[currentLevelIndex].size-1)
+               scrollToPct = scrollTotal / totalHeight
+               offsetLeft = currentLevel.outerWidth() - scrollContainer.width()
+            }
             // scrollTotal = scrollToPct
+
 
 
             currentLevel.stop().animate({ left: - offsetLeft },1200)
 
 
          } else {
-
+console.log("SHOULD CHANGE LEVEL TO", nextLevelIndex);
             scrollLengths[ currentLevelIndex ].doneScrolling = false
 
             nextHeight = $('.level').first().outerHeight() * nextLevelIndex
@@ -243,7 +277,16 @@ console.log("TrAVEL!");
 
             $('.travel').stop().animate({
                marginTop: nextHeight
-            },1200)
+            },600,function(){
+                  //
+                  // $('.level').eq(currentLevelIndex).stop().animate({
+                  //    left: ( scrollTotal - scrollLengths[ currentLevelIndex ].start )
+                  // }, 600)
+
+            })
+
+            displayCurrentMenuItem( nextLevelIndex )
+
 
 
             scrollLengths[ currentLevelIndex ].doneScrolling = false
@@ -267,7 +310,7 @@ console.log("TrAVEL!");
 
                   // scrollStep *= 2
                   scrollStep = Math.max( scrollContainer.width(), scrollStep)
-                  console.log("scrollStep::",scrollStep)
+                  // console.log("scrollStep::",scrollStep)
 
                }
             }
@@ -277,6 +320,21 @@ console.log("TrAVEL!");
 
 
          }
+
+      } else {
+         // if scrollingHorizontalLevel
+console.log("scrollingHorizontalLevel!");
+         var left = parseInt(currentLevel.stop().css( 'left' ))
+         if ( travelDirection === "left" ) {
+            horizontalIncrement = 1
+         } else {
+            horizontalIncrement = - 1
+         }
+         left += ($(window).width() / 3) * horizontalIncrement
+         currentLevel.stop().animate({ left: left },1200)
+
+      }
+
 
 
       }
@@ -358,11 +416,12 @@ function goTo( levelIndex, elementIndex ) {
    levels = createStructure()
    // console.log( levels )
    currentLevel = $('.level').eq( levelIndex )
-   currentLevelIndex = levelIndex
-
+   // currentLevelIndex = levelIndex
+   // nextLevelIndex = levelIndex
+   scrollLengths[levelIndex].doneScrolling=true
    nextLevel = currentLevel
 
-   scrollTravel( nextLevel )
+   // scrollTravel( nextLevel )
 
    nextHeight = $('.level').first().outerHeight() * levelIndex
 
@@ -387,23 +446,25 @@ function goTo( levelIndex, elementIndex ) {
       totalScrolled += offsetLeft
 
    }
-console.log("anim", nextHeight, offsetLeft);
-   scrollTotal = totalScrolled
+
+   // scrollTotal = totalScrolled + 1
 
 
    $('.travel').stop().animate({
 
       marginTop: nextHeight
 
-   },1200, function(){
+   },700, function(){
 
-         currentLevel.stop().animate({ left: - offsetLeft }, 600)
+         currentLevel.stop().animate({ left: - offsetLeft }, 600, function() {
 
+
+            scrollTotal = (scrollLengths[levelIndex].start + offsetLeft) + 1
+
+            scrollTravel()
+         })
    })
 
-   scrollTotal = (scrollLengths[levelIndex].start + offsetLeft)
-
-   scrollTravel()
 
 }
 
@@ -553,5 +614,31 @@ function loadLevelImage( level ) {
          image.imgLiquid()
 
    }
+
+}
+
+
+
+function setupHorizontalScrollWidth() {
+
+   $('.horizontal-only').each(function(){
+
+      var totalChildrenW = 0
+
+      $(this).children().first().children().each(function(){
+         totalChildrenW += $(this).width()
+      })
+
+      $(this).children().first().width( totalChildrenW )
+
+   })
+}
+
+
+function displayCurrentMenuItem( index ) {
+
+
+   $('.current-menu li').removeClass('active')
+   .eq( parseInt(index)+1 ).addClass('active')
 
 }
