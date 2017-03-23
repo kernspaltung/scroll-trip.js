@@ -451,7 +451,10 @@ function scrollTravel() {
       // offsetLeft =
 
       offsetLeft = currentChild.position().left - (scrollContainer.width() - currentChild.width()) / 2
-
+if( currentChild.width() > scrollContainer.width() * 1.3 ) {
+   originalOffsetLeft = offsetLeft
+   offsetLeft = originalOffsetLeft - parseInt(nextLevel.css('left'))
+}
       maxScroll = nextLevel.width() - currentChild.width()
       maxScroll -= parseInt(currentChild.css('marginLeft')) + parseInt(currentChild.css('marginRight'))
 
