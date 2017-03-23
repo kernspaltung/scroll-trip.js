@@ -437,9 +437,9 @@ function scrollTravel() {
       console.log( "SCROLL.I.L", scrollInLevelPct, $('.level').eq(currentLevelIndex).children().first().children().length, levelsInfo[ currentLevelIndex ].size )
 
       if( travelDirection === "left" || travelDirection === "down" ) {
-         levelsInfo[ nextLevelIndex ].currentChild++
-      } else {
          levelsInfo[ nextLevelIndex ].currentChild--
+      } else {
+         levelsInfo[ nextLevelIndex ].currentChild++
       }
 
       levelsInfo[ nextLevelIndex ].doneScrolling = false
