@@ -6,6 +6,8 @@ var travelAxis
 var travelDirection
 
 var scrollingHorizontalLevel
+var horizontalScrollLevel
+var horizontalScrollingDone
 
 window.requestAnimFrame = (function(){
    return  window.requestAnimationFrame       ||
@@ -20,7 +22,7 @@ window.requestAnimFrame = (function(){
 
 // $(document).foundation()
 
-scrollLengths = []
+levelsInfo = []
 isScrolling = false
 gotMouseWheel = false
 lastScrollTop = 0
@@ -60,8 +62,15 @@ $(document).ready(function(){
 
    // scrollTravel()
 
+   fadeOnVisible()
+
 })
 
+function fadeOnVisible() {
+
+   $('.fadeOnVisible').css({ opacity: 0 })
+
+}
 
 
 
@@ -191,9 +200,9 @@ function scrollTravel() {
 
    $('#scroll-indicator .bar').height( $(window).height() * scrollPct )
 
-   for( i in scrollLengths ) {
+   for( i in levelsInfo ) {
 
-      if( scrollTotal >= scrollLengths[i].start && scrollTotal < scrollLengths[i].start + scrollLengths[i].size ) {
+      if( scrollTotal >= levelsInfo[i].start && scrollTotal < levelsInfo[i].start + levelsInfo[i].size ) {
 
          nextLevelIndex = i
 
@@ -224,138 +233,242 @@ function scrollTravel() {
                   nextLevelIndex = parseInt(currentLevelIndex) + 1
                }
 
-               scrollLengths[ currentLevelIndex ].doneScrolling = true
+               levelsInfo[ currentLevelIndex ].doneScrolling = true
 
                scrollingHorizontalLevel = false
-               
+
             } else {
 
-               scrollingHorizontalLevel = true
+                  scrollingHorizontalLevel = true
 
             }
+
+         } else {
+
+            scrollingHorizontalLevel = false
 
          }
 
-         // console.log("done?", scrollLengths[ currentLevelIndex ].doneScrolling)
-if( ! scrollingHorizontalLevel ) {
+         if( ! scrollingHorizontalLevel ) {
 
-         if( ! scrollLengths[ currentLevelIndex ].doneScrolling ) {
+            if( ! levelsInfo[ currentLevelIndex ].doneScrolling ) {
 
-            // console.log("Done!");
+               // console.log("Done!");
 
-            scrollLengths[ currentLevelIndex ].doneScrolling = true
+               levelsInfo[ currentLevelIndex ].doneScrolling = true
 
-            currentLevel = $('.level').eq( currentLevelIndex )
+               console.log("set Current Level", currentLevelIndex );
 
-            offsetLeft = 0
+               currentLevel = $('.level').eq( currentLevelIndex )
 
-            if( nextLevelIndex < currentLevelIndex ) {
-               scrollTotal = (scrollLengths[currentLevelIndex].start)
-               scrollToPct = scrollTotal / totalHeight
                offsetLeft = 0
-            }
-            if( nextLevelIndex > currentLevelIndex ) {
-               scrollTotal = (scrollLengths[currentLevelIndex].start+scrollLengths[currentLevelIndex].size-1)
-               scrollToPct = scrollTotal / totalHeight
-               offsetLeft = currentLevel.outerWidth() - scrollContainer.width()
-            }
-            // scrollTotal = scrollToPct
+
+               if( nextLevelIndex < currentLevelIndex ) {
+                  scrollTotal = (levelsInfo[currentLevelIndex].start)
+                  scrollToPct = scrollTotal / totalHeight
+                  offsetLeft = 0
+               }
+               if( nextLevelIndex > currentLevelIndex ) {
+                  scrollTotal = (levelsInfo[currentLevelIndex].start+levelsInfo[currentLevelIndex].size-1)
+                  scrollToPct = scrollTotal / totalHeight
+                  offsetLeft = currentLevel.outerWidth() - scrollContainer.width()
+               }
+               // scrollTotal = scrollToPct
+
+               console.log("to do", "RUN LEVEL STEP FUNCTIONS FOR n" );
+
+               currentLevel.stop().animate({ left: - offsetLeft },1200)
 
 
+            } else {
 
-            currentLevel.stop().animate({ left: - offsetLeft },1200)
+               console.log("SHOULD CHANGE LEVEL TO", nextLevelIndex)
 
+               levelsInfo[ currentLevelIndex ].doneScrolling = false
 
-         } else {
-console.log("SHOULD CHANGE LEVEL TO", nextLevelIndex);
-            scrollLengths[ currentLevelIndex ].doneScrolling = false
+               nextHeight = $('.level').first().outerHeight() * nextLevelIndex
 
-            nextHeight = $('.level').first().outerHeight() * nextLevelIndex
-
-            nextHeight *= -1
+               nextHeight *= -1
 
 
-            $('.travel').stop().animate({
-               marginTop: nextHeight
-            },600,function(){
+               $('.travel').stop().animate({
+                  marginTop: nextHeight
+               },600,function(){
                   //
                   // $('.level').eq(currentLevelIndex).stop().animate({
-                  //    left: ( scrollTotal - scrollLengths[ currentLevelIndex ].start )
+                  //    left: ( scrollTotal - levelsInfo[ currentLevelIndex ].start )
                   // }, 600)
 
-            })
+               })
 
-            displayCurrentMenuItem( nextLevelIndex )
-
-
-
-            scrollLengths[ currentLevelIndex ].doneScrolling = false
-
-            currentLevelIndex = nextLevelIndex
-
-            nextLevel = $('.level').eq(nextLevelIndex)
-
-            loadLevelImage( nextLevel )
-
-            // console.log("nextLevel",nextLevel.children().first().children());
-
-            if(nextLevel.length>0) {
-
-               numChildren = nextLevel.children().first().children().length
-
-               if(numChildren>1) {
+               displayCurrentMenuItem( nextLevelIndex )
 
 
-                  scrollStep = nextLevel.width() / numChildren
 
-                  // scrollStep *= 2
-                  scrollStep = Math.max( scrollContainer.width(), scrollStep)
-                  // console.log("scrollStep::",scrollStep)
+               levelsInfo[ currentLevelIndex ].doneScrolling = true
 
+               currentLevelIndex = nextLevelIndex
+
+               nextLevel = $('.level').eq(nextLevelIndex)
+
+               loadLevelImage( nextLevel )
+
+               // console.log("nextLevel",nextLevel.children().first().children());
+
+               if(nextLevel.length>0) {
+
+                  numChildren = nextLevel.children().first().children().length
+
+                  if(numChildren>1) {
+
+
+                     scrollStep = nextLevel.width() / numChildren
+
+                     scrollStep = Math.max( scrollContainer.width(), scrollStep)
+
+                  }
                }
+
+               console.log("set Current Level", currentLevelIndex );
+
+               currentLevel = $('.level').eq( currentLevelIndex )
+
+               console.log("to do", "RUN LEVEL STEP FUNCTIONS FOR 0" );
+
+
             }
 
-            currentLevel = $('.level').eq( currentLevelIndex )
-
-
-
-         }
-
-      } else {
-         // if scrollingHorizontalLevel
-console.log("scrollingHorizontalLevel!");
-         var left = parseInt(currentLevel.stop().css( 'left' ))
-         if ( travelDirection === "left" ) {
-            horizontalIncrement = 1
          } else {
-            horizontalIncrement = - 1
+            // if scrollingHorizontalLevel
+            if( currentLevel.hasClass('horizontal-only') ) {
+               horizontalScrollLevel = currentLevel
+
+               console.log("scrollingHorizontalLevel!")
+
+               var left = parseInt(currentLevel.stop().css( 'left' ))
+
+               if ( travelDirection === "left" ) {
+                  horizontalIncrement = 1
+               } else {
+                  horizontalIncrement = - 1
+               }
+
+               console.log("to do", "go step by step" )
+
+               left += ($(window).width() / 3) * horizontalIncrement
+
+               if( left < 0 ) {
+                  modifier = -1
+               }
+               else {
+                  modifier = 1
+               }
+
+               console.log("horizontalScrollLevel", horizontalScrollLevel);
+
+               levelScrollSpaceWidth = horizontalScrollLevel.children().first().width() - $(window).width() + 128
+
+
+               var goToLevel = undefined
+
+               if( Math.abs(left) > levelScrollSpaceWidth ) {
+
+                  if( horizontalScrollingDone ) {
+                     goToLevel = parseInt(currentLevelIndex) + 1
+                  }
+                  horizontalScrollingDone = true
+
+
+               }
+               if( left >= 0 ) {
+
+                  if( horizontalScrollingDone ) {
+                     goToLevel = parseInt(currentLevelIndex) - 1
+                  }
+                  horizontalScrollingDone = true
+
+                  left = 0
+                  console.log("left = 0")
+               }
+
+
+               left = Math.min( Math.abs(left), levelScrollSpaceWidth ) * modifier
+
+               console.log( "horizontal left", left )
+
+               if( typeof( goToLevel  ) != "undefined" ) {
+
+                  horizontalScrollLevel.stop().animate({ left: left },600, function(){})
+
+                  goTo( goToLevel )
+
+                  goToLevel = undefined
+
+                  horizontalScrollLevel = null
+
+                  horizontalScrollingDone = false
+
+               } else {
+
+                  horizontalScrollLevel.stop().animate({ left: left },1200, function(){})
+
+               }
+
+            }
+
          }
-         left += ($(window).width() / 3) * horizontalIncrement
-         currentLevel.stop().animate({ left: left },1200)
-
-      }
-
-
 
       }
    } else {
 
-      scrollBeforePct = scrollLengths[nextLevelIndex].start / totalHeight
+      scrollBeforePct = levelsInfo[nextLevelIndex].start / totalHeight
 
       scrollInLevelPct = scrollPct - scrollBeforePct
 
-      scrollInLevel = scrollInLevelPct / ( scrollLengths[nextLevelIndex].size / totalHeight )
+      scrollInLevel = scrollInLevelPct / ( levelsInfo[nextLevelIndex].size / totalHeight )
 
-      if( nextLevel.width() > scrollContainer.width() ) {
+      // map scrollInLevel to child elements' positions, centering them
+      console.log( "SCROLL.I.L", scrollInLevelPct, $('.level').eq(currentLevelIndex).children().first().children().length, levelsInfo[ currentLevelIndex ].size )
 
-         // extraWidth = $('.level').width() - scrollContainer.width()
-         //
-         // horizontalScrollTotal = scrollContainer.width() + extraWidth
-         offsetLeft = scrollInLevel * ( nextLevel.innerWidth() - scrollContainer.outerWidth() )
-
-         nextLevel.stop().animate({ left: - offsetLeft },1200)
-
+      if( travelDirection === "left" || travelDirection === "down" ) {
+         levelsInfo[ nextLevelIndex ].currentChild++
+      } else {
+         levelsInfo[ nextLevelIndex ].currentChild--
       }
+
+      levelsInfo[ nextLevelIndex ].doneScrolling = false
+
+      console.log( "currentChild", levelsInfo[ nextLevelIndex ].currentChild );
+      var currentChild = levelsInfo[nextLevelIndex].children.eq(levelsInfo[nextLevelIndex].currentChild)
+      // console.log( "childrenwidth", levelsInfo[ nextLevelIndex ].children );
+      // for (var i = 0; i < levelsInfo[ nextLevelIndex ].currentChild; i++) {
+
+
+      // offsetLeft = scrollInLevel * ( nextLevel.innerWidth() - scrollContainer.outerWidth() )
+      // offsetLeft =
+
+      offsetLeft = currentChild.position().left - (scrollContainer.width() - currentChild.width()) / 2
+
+      maxScroll = nextLevel.width() - currentChild.width() * 2
+      maxScroll -= parseInt(currentChild.css('marginLeft')) + parseInt(currentChild.css('marginRight'))
+
+      console.log( "check" , offsetLeft, maxScroll )
+
+      offsetLeft = Math.min(  offsetLeft, nextLevel.width() )
+
+      nextLevel.stop().animate({ left: - offsetLeft },1200)
+
+
+      // if( nextLevel.width() > scrollContainer.width() ) {
+      //
+      //    // extraWidth = $('.level').width() - scrollContainer.width()
+      //    //
+      //    // horizontalScrollTotal = scrollContainer.width() + extraWidth
+      //    offsetLeft = scrollInLevel * ( nextLevel.innerWidth() - scrollContainer.outerWidth() )
+      //
+      //    nextLevel.stop().animate({ left: - offsetLeft },1200)
+      //
+      // }
 
 
 
@@ -416,9 +529,10 @@ function goTo( levelIndex, elementIndex ) {
    levels = createStructure()
    // console.log( levels )
    currentLevel = $('.level').eq( levelIndex )
+
    // currentLevelIndex = levelIndex
    // nextLevelIndex = levelIndex
-   scrollLengths[levelIndex].doneScrolling=true
+   levelsInfo[levelIndex].doneScrolling=true
    nextLevel = currentLevel
 
    // scrollTravel( nextLevel )
@@ -431,19 +545,24 @@ function goTo( levelIndex, elementIndex ) {
 
    totalScrolled = nextHeight
 
+   if( typeof(elementIndex) != "undefined" ) {
 
-   if( (elementIndex in levels[levelIndex].children) ) {
+      levelsInfo[levelIndex].currentChild = elementIndex
 
-      currentElementIndex = elementIndex
-      nextElementIndex = elementIndex
+      if( (elementIndex in levels[levelIndex].children) ) {
 
-      for (var i = 0; i < elementIndex; i++) {
-         offsetLeft += levels[levelIndex].children[i].width
+         currentElementIndex = elementIndex
+         nextElementIndex = elementIndex
+
+         for (var i = 0; i < elementIndex; i++) {
+            offsetLeft += levels[levelIndex].children[i].width
+         }
+
+         offsetLeft = Math.min( offsetLeft, currentLevel.width() - scrollContainer.width() )
+
+         totalScrolled += offsetLeft
+
       }
-
-      offsetLeft = Math.min( offsetLeft, currentLevel.width() - scrollContainer.width() )
-
-      totalScrolled += offsetLeft
 
    }
 
@@ -456,13 +575,23 @@ function goTo( levelIndex, elementIndex ) {
 
    },700, function(){
 
+      currentLevelIndex = levelIndex
+      nextLevelIndex = levelIndex
+
+      currentLevel = $('.level').eq( currentLevelIndex )
+
+      if( typeof(elementIndex) != "undefined" ) {
+
          currentLevel.stop().animate({ left: - offsetLeft }, 600, function() {
 
-
-            scrollTotal = (scrollLengths[levelIndex].start + offsetLeft) + 1
+            scrollTotal = (levelsInfo[levelIndex].start + offsetLeft) + 1
 
             scrollTravel()
+
          })
+
+      }
+
    })
 
 
@@ -537,40 +666,51 @@ function getTotalScrollHeight() {
       // if( $(this).width() > scrollContainer.width() ) {
 
       scrollLength += $(this).width()// #level-4 {
-//    width: $container_width * 6;
-// }
+         //    width: $container_width * 6;
+         // }
 
-      // }
+         // }
 
-      $(this).attr('data-scroll-length', scrollLength)
+         $(this).attr('data-scroll-length', scrollLength)
 
+         itemSizes = []
+         var children
+         if( $(this).children().length === 1 ) children = $(this).children().first().children()
+         else if( $(this).children().length > 1 ) children = $(this).children()
 
-      scrollLengths.push({
-         start: totalHeight,
-         size: scrollLength,
-         doneScrolling: false
+         children.each(function(){
+            itemSizes.push($(this).width())
+         })
+
+         levelsInfo.push({
+            start: totalHeight,
+            itemSizes: itemSizes,
+            children: children,
+            size: scrollLength,
+            doneScrolling: false,
+            currentChild: 0
+         })
+
+         totalHeight += scrollLength
+
+         if( $(this).index() >= items.length -1 ) {
+            totalHeight += scrollLength
+         }
+
       })
 
-      totalHeight += scrollLength
 
-      if( $(this).index() >= items.length -1 ) {
-         totalHeight += scrollLength
-      }
+      return totalHeight
 
-   })
-
-
-   return totalHeight
-
-}
+   }
 
 
 
-function loadLevelImage( level ) {
+   function loadLevelImage( level ) {
 
-   var imagesrc = level.data('image')
+      var imagesrc = level.data('image')
 
-   if(imagesrc != ""
+      if(imagesrc != ""
       ||
       imagesrc != "undefined") {
 
@@ -613,32 +753,34 @@ function loadLevelImage( level ) {
 
          image.imgLiquid()
 
+      }
+
    }
 
-}
 
 
+   function setupHorizontalScrollWidth() {
 
-function setupHorizontalScrollWidth() {
+      $('.horizontal-only').each(function(){
 
-   $('.horizontal-only').each(function(){
+         var totalChildrenW = 0
 
-      var totalChildrenW = 0
+         $(this).children().first().children().each(function(){
+            totalChildrenW += $(this).width()
+            totalChildrenW += parseInt($(this).css('marginLeft'))
+            totalChildrenW += parseInt($(this).css('marginRight'))
+         })
 
-      $(this).children().first().children().each(function(){
-         totalChildrenW += $(this).width()
+         $(this).children().first().width( totalChildrenW )
+
       })
-
-      $(this).children().first().width( totalChildrenW )
-
-   })
-}
+   }
 
 
-function displayCurrentMenuItem( index ) {
+   function displayCurrentMenuItem( index ) {
 
 
-   $('.current-menu li').removeClass('active')
-   .eq( parseInt(index)+1 ).addClass('active')
+      $('.current-menu li').removeClass('active')
+      .eq( parseInt(index)+1 ).addClass('active')
 
-}
+   }
