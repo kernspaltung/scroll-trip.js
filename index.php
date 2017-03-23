@@ -123,6 +123,17 @@
             </div>
 
 
+            <div id="level-long" class="level row expanded" data-title="Test Title 2.3" data-image="http://unsplash.it/1200x600?random=4">
+               <div class="w-100 p-6">
+
+                  <h1 class="p3">
+                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus totam porro id minus atque neque eos, magni hic.
+                  </h1>
+                  <img src="http://fakeimg.pl/2900x600/fea330/0ba1ca" alt="" class="background absUpL z-1">
+
+               </div>
+            </div>
+
             <div id="level-3" class="level row expanded" data-title="Test Title 3" data-image="http://unsplash.it/1200x600?random=4">
                <div class="row expanded">
                   Lorem ipsum dolor sit amet.
@@ -130,22 +141,7 @@
 
                </div>
             </div>
-            <!--
-            <div id="level-4" class="level row expanded" data-title="Test Title 4" data-image="http://unsplash.it/1200x600?random=5">
-               <div class="row expanded">
-                  <?php for ($i=0; $i < 2; $i++) {
-                     echo $sample_html;
-                  } ?>
-               </div>
-            </div>
-            <div id="level-5" class="level row expanded" data-title="Test Title 5" data-image="http://unsplash.it/1200x600?random=6">
-               <div class="row expanded">
-                  Lorem ipsum dolor sit amet.
-                  <img src="http://fakeimg.pl/900x600/fea330/0ba1ca" alt="" class="background">
 
-               </div>
-            </div>
-             -->
          </div>
       </div>
 

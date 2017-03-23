@@ -452,6 +452,7 @@ function scrollTravel() {
 
       offsetLeft = currentChild.position().left - (scrollContainer.width() - currentChild.width()) / 2
 if( currentChild.width() > scrollContainer.width() * 1.3 ) {
+   console.log("ULTRAWIDE");
    originalOffsetLeft = offsetLeft
    offsetLeft = originalOffsetLeft - parseInt(nextLevel.css('left'))
 }
@@ -564,6 +565,11 @@ function goTo( levelIndex, elementIndex ) {
          }
 
          offsetLeft = Math.min( offsetLeft, currentLevel.width() - scrollContainer.width() )
+
+         var currentChild = levelsInfo[levelIndex].children.eq(elementIndex)
+         levelsInfo[levelIndex].currentChild = elementIndex
+         
+         offsetLeft = currentChild.position().left - (scrollContainer.width() - currentChild.width()) / 2
 
          totalScrolled += offsetLeft
 
