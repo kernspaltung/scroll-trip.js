@@ -23,6 +23,8 @@ window.requestAnimFrame = (function(){
 // $(document).foundation()
 
 levelsInfo = []
+startedDrag = false
+draggingPointer = false;
 isScrolling = false
 gotMouseWheel = false
 lastScrollTop = 0
@@ -79,7 +81,7 @@ function setupResize() {
 }
 
 
-draggingPointer = false;
+
 
 
 function setupScroll() {
@@ -95,7 +97,7 @@ function setupScroll() {
 
    $('.scroll-container').on("pointerup", function(event) {
 
-      // console.log("up", event.pageY, event.pageX );
+      console.log("up", draggingPointer, event.pageY, event.pageX );
 
       if( draggingPointer ){
 
@@ -129,12 +131,14 @@ function setupScroll() {
       }
 
       draggingPointer = false
-
+      startedDrag = false
+      travelAxis = undefined
+      travelDirection = undefined
    });
 
-   $('.scroll-container').on("pointerdown", function(event) {
 
-      draggingPointer = true
+   $('.scroll-container').on("pointerdown", function(event) {
+      startedDrag = true
       // console.log(startY, startX );
       startY = event.pageY
       startX = event.pageX
@@ -142,6 +146,8 @@ function setupScroll() {
    });
 
    $('.scroll-container').on("pointermove", function(event) {
+      if(startedDrag) draggingPointer = true
+      startedDrag = false
       // console.log("move");
       //
       // startY = event.pageY
@@ -440,8 +446,6 @@ function scrollTravel() {
 
       console.log( "currentChild", levelsInfo[ nextLevelIndex ].currentChild );
       var currentChild = levelsInfo[nextLevelIndex].children.eq(levelsInfo[nextLevelIndex].currentChild)
-      // console.log( "childrenwidth", levelsInfo[ nextLevelIndex ].children );
-      // for (var i = 0; i < levelsInfo[ nextLevelIndex ].currentChild; i++) {
 
 
       // offsetLeft = scrollInLevel * ( nextLevel.innerWidth() - scrollContainer.outerWidth() )
@@ -449,7 +453,7 @@ function scrollTravel() {
 
       offsetLeft = currentChild.position().left - (scrollContainer.width() - currentChild.width()) / 2
 
-      maxScroll = nextLevel.width() - currentChild.width() * 2
+      maxScroll = nextLevel.width() - currentChild.width()
       maxScroll -= parseInt(currentChild.css('marginLeft')) + parseInt(currentChild.css('marginRight'))
 
       console.log( "check" , offsetLeft, maxScroll )
@@ -488,7 +492,6 @@ function scrollTravel() {
 
 
    lastScrollTop = scrollTotal
-
 
 }
 
