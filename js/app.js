@@ -436,7 +436,7 @@ function scrollTravel() {
       // map scrollInLevel to child elements' positions, centering them
       console.log( "SCROLL.I.L", scrollInLevelPct, $('.level').eq(currentLevelIndex).children().first().children().length, levelsInfo[ currentLevelIndex ].size )
 
-      if( travelDirection === "left" || travelDirection === "down" ) {
+      if( travelDirection === "left" || travelDirection === "up" ) {
          levelsInfo[ nextLevelIndex ].currentChild--
       } else {
          levelsInfo[ nextLevelIndex ].currentChild++
