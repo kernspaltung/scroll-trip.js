@@ -99,7 +99,7 @@ function setupScroll() {
 
       console.log("up", draggingPointer, event.pageY, event.pageX );
 
-      if( draggingPointer ){
+      if( draggingPointer && startedDrag ){
 
          var direction;
 
@@ -147,7 +147,6 @@ function setupScroll() {
 
    $('.scroll-container').on("pointermove", function(event) {
       if(startedDrag) draggingPointer = true
-      startedDrag = false
       // console.log("move");
       //
       // startY = event.pageY
