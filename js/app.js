@@ -568,7 +568,7 @@ function goTo( levelIndex, elementIndex ) {
 
          var currentChild = levelsInfo[levelIndex].children.eq(elementIndex)
          levelsInfo[levelIndex].currentChild = elementIndex
-         
+
          offsetLeft = currentChild.position().left - (scrollContainer.width() - currentChild.width()) / 2
 
          totalScrolled += offsetLeft
@@ -597,7 +597,7 @@ function goTo( levelIndex, elementIndex ) {
 
             scrollTotal = (levelsInfo[levelIndex].start + offsetLeft) + 1
 
-            scrollTravel()
+            // scrollTravel()
 
          })
 
