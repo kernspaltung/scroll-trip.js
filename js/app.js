@@ -9,6 +9,8 @@ var scrollingHorizontalLevel
 var horizontalScrollLevel
 var horizontalScrollingDone
 
+var lastScrolledChild
+
 window.requestAnimFrame = (function(){
    return  window.requestAnimationFrame       ||
    window.webkitRequestAnimationFrame ||
@@ -451,11 +453,13 @@ function scrollTravel() {
       // offsetLeft =
 
       offsetLeft = currentChild.position().left - (scrollContainer.width() - currentChild.width()) / 2
-if( currentChild.width() > scrollContainer.width() * 1.3 ) {
-   console.log("ULTRAWIDE");
-   originalOffsetLeft = offsetLeft
-   offsetLeft = originalOffsetLeft - parseInt(nextLevel.css('left'))
-}
+
+      if( currentChild.width() > scrollContainer.width() * 1.3 ) {
+         console.log("ULTRAWIDE");
+         originalOffsetLeft = offsetLeft
+         offsetLeft = originalOffsetLeft - parseInt(nextLevel.css('left'))
+      }
+
       maxScroll = nextLevel.width() - currentChild.width()
       maxScroll -= parseInt(currentChild.css('marginLeft')) + parseInt(currentChild.css('marginRight'))
 
@@ -463,8 +467,24 @@ if( currentChild.width() > scrollContainer.width() * 1.3 ) {
 
       offsetLeft = Math.min(  offsetLeft, nextLevel.width() )
 
-      nextLevel.stop().animate({ left: - offsetLeft },1200)
 
+
+      console.log("To Do:", "fade out elements from last viewed element" );
+      if(typeof(lastScrolledChild)!="undefined") {
+         lastScrolledChild.find('.appear,video').animate({opacity:0},400, function(){
+         })
+         console.log(lastScrolledChild.find('video').first().get(0));
+
+      }
+
+      nextLevel.find('video').each(function(){
+         $(this).get(0).play()
+      })
+      nextLevel.stop().animate({ left: - offsetLeft },1500, function(){
+         nextLevel.find('.appear,video').animate({opacity:1},400)
+      })
+
+      lastScrolledChild = currentChild
 
       // if( nextLevel.width() > scrollContainer.width() ) {
       //
