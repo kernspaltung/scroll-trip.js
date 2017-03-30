@@ -68,11 +68,32 @@ $(document).ready(function(){
 
    fadeOnVisible()
 
+   sxsw.init();
+
+      $(window).resize(function() {
+
+          var browserHeight = Math.round($(window).height());
+          var browserWidth = Math.round($(window).width());
+          var videoHeight = $('.wd-thumb-list li a').eq(0).attr('data-wd-height');
+          var videoWidth = $('.wd-thumb-list li a').eq(0).attr('data-wd-width');
+
+          var new_size = sxsw.full_bleed(browserWidth, browserHeight, videoWidth, videoHeight);
+
+          $('video')
+              .width(new_size.width)
+              .height(new_size.height);
+      });
+      document.querySelector('video').defaultPlaybackRate = 0.3;
+      document.querySelector('video').playbackRate = 0.3;
+
+      goTo(0,0)
+
 })
 
 function fadeOnVisible() {
 
    $('.fadeOnVisible').css({ opacity: 0 })
+   $('.appear').css({ opacity: 0 })
 
 }
 
@@ -284,6 +305,21 @@ function scrollTravel() {
 
                console.log("to do", "RUN LEVEL STEP FUNCTIONS FOR n" );
 
+               if(typeof(currentChild)=="undefined") {
+                  currentChild = levelsInfo[ currentLevelIndex ].children.eq(0)
+               }
+               console.log("currentChild", currentChild);
+               if(typeof(currentChild)!="undefined") {
+                  currentChild.find('video').animate({opacity:1},800)
+                  currentChild.find('.appear').each(function(){
+                     var fadeTime = $(this).data('fade-time')
+                     console.log(fadeTime);
+                     if( fadeTime === "" )
+                        fadeTime = 800
+                     $(this).stop().animate({opacity:1},fadeTime)
+                  })
+               }
+
                currentLevel.stop().animate({ left: - offsetLeft },1200)
 
 
@@ -296,6 +332,22 @@ function scrollTravel() {
                nextHeight = $('.level').first().outerHeight() * nextLevelIndex
 
                nextHeight *= -1
+
+               currentChild = levelsInfo[ nextLevelIndex ].children.eq(levelsInfo[ currentLevelIndex ].currentChild)
+               if(typeof(currentChild)==="undefined") {
+                  currentChild = levelsInfo[ nextLevelIndex ].children.eq(0)
+               }
+               console.log("currentChild", currentChild, typeof(levelsInfo[ nextLevelIndex ].currentChild));
+               if(typeof(currentChild)!="undefined") {
+                  currentChild.find('video').animate({opacity:1},800)
+                  currentChild.find('.appear').each(function(){
+                     var fadeTime = $(this).data('fade-time')
+                     console.log(fadeTime);
+                     if( fadeTime === "" )
+                        fadeTime = 800
+                     $(this).stop().animate({opacity:1},fadeTime)
+                  })
+               }
 
 
                $('.travel').stop().animate({
@@ -470,21 +522,28 @@ function scrollTravel() {
 
 
       console.log("To Do:", "fade out elements from last viewed element" );
-      if(typeof(lastScrolledChild)!="undefined") {
-         lastScrolledChild.find('.appear,video').animate({opacity:0},400, function(){
-         })
-         console.log(lastScrolledChild.find('video').first().get(0));
 
-      }
-
-      nextLevel.find('video').each(function(){
+      currentChild.find('video').each(function(){
          $(this).get(0).play()
       })
-      nextLevel.stop().animate({ left: - offsetLeft },1500, function(){
-         nextLevel.find('.appear,video').animate({opacity:1},400)
+      if(typeof(lastScrolledChild)!="undefined") {
+         lastScrolledChild.find('.appear,video').stop().animate({opacity:0},800, function(){
+         })
+         console.log("lastScrolledChild video", lastScrolledChild.find('video').first().get(0));
+
+      }
+      currentChild.find('video').animate({opacity:1},800)
+      currentChild.find('.appear').each(function(){
+         var fadeTime = $(this).data('fade-time')
+         console.log(fadeTime);
+         if( fadeTime === "" )
+         fadeTime = 800
+         $(this).stop().animate({opacity:1},fadeTime)
+      })
+      nextLevel.stop().stop().animate({ left: - offsetLeft },1500, function(){
+         lastScrolledChild = currentChild
       })
 
-      lastScrolledChild = currentChild
 
       // if( nextLevel.width() > scrollContainer.width() ) {
       //
@@ -571,6 +630,15 @@ function goTo( levelIndex, elementIndex ) {
 
    totalScrolled = nextHeight
 
+   currentLevel.find('video').animate({opacity:1},800)
+   currentLevel.find('.appear').each(function(){
+      var fadeTime = $(this).data('fade-time')
+      console.log(fadeTime);
+      if( fadeTime === "" )
+         fadeTime = 800
+      $(this).stop().animate({opacity:1},fadeTime)
+   })
+
    if( typeof(elementIndex) != "undefined" ) {
 
       levelsInfo[levelIndex].currentChild = elementIndex
@@ -612,7 +680,16 @@ function goTo( levelIndex, elementIndex ) {
       currentLevel = $('.level').eq( currentLevelIndex )
 
       if( typeof(elementIndex) != "undefined" ) {
-
+         if(typeof(currentChild)!="undefined") {
+            currentChild.find('video').animate({opacity:1},800)
+            currentChild.find('.appear').each(function(){
+               var fadeTime = $(this).data('fade-time')
+               console.log(fadeTime);
+               if( fadeTime === "" )
+                  fadeTime = 800
+               $(this).stop().animate({opacity:1},fadeTime)
+            })
+         }
          currentLevel.stop().animate({ left: - offsetLeft }, 600, function() {
 
             scrollTotal = (levelsInfo[levelIndex].start + offsetLeft) + 1
@@ -815,3 +892,46 @@ function getTotalScrollHeight() {
       .eq( parseInt(index)+1 ).addClass('active')
 
    }
+
+
+
+   var sxsw = {
+
+       full_bleed: function(boxWidth, boxHeight, imgWidth, imgHeight) {
+
+           // Calculate new height and width...
+           var initW = imgWidth;
+           var initH = imgHeight;
+           var ratio = initH / initW;
+
+           imgWidth = boxWidth;
+           imgHeight = boxWidth * ratio;
+
+           // If the video is not the right height, then make it so...
+           if(imgHeight < boxHeight){
+               imgHeight = boxHeight;
+               imgWidth = imgHeight / ratio;
+           }
+
+           //  Return new size for video
+           return {
+               width: imgWidth,
+               height: imgHeight
+           };
+
+       },
+
+       init: function() {
+           var browserHeight = Math.round(jQuery(window).height());
+           var browserWidth = Math.round(jQuery(window).width());
+           var videoHeight = jQuery('video').height();
+           var videoWidth = jQuery('video').width();
+
+           var new_size = sxsw.full_bleed(browserWidth, browserHeight, videoWidth, videoHeight);
+
+           jQuery('video')
+               .width(new_size.width)
+               .height(new_size.height);
+       }
+
+   };
