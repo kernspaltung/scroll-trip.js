@@ -90,12 +90,16 @@ $(document).ready(function() {
 
       var new_size = sxsw.full_bleed(browserWidth, browserHeight, videoWidth, videoHeight);
 
-      $('video')
-      .width(new_size.width)
-      .height(new_size.height);
+      if($('video').length>0) {
+
+         $('video')
+         .width(new_size.width)
+         .height(new_size.height);
+
+         document.querySelector('video').defaultPlaybackRate = 0.3;
+         document.querySelector('video').playbackRate = 0.3;
+      }
    });
-   document.querySelector('video').defaultPlaybackRate = 0.3;
-   document.querySelector('video').playbackRate = 0.3;
 
    goTo(0, 0)
 
@@ -330,9 +334,15 @@ function scrollTravel() {
                   }
                   console.log("currentChild", currentChild);
                   if (typeof(currentChild) != "undefined") {
-                     currentChild.find('video').animate({
-                        opacity: 1
-                     }, 800)
+
+                     if(currentChild.find('video').length>0){
+
+                        currentChild.find('video').animate({
+                           opacity: 1
+                        }, 800)
+
+                     }
+
                      currentChild.find('.appear').each(function() {
                         var fadeTime = $(this).data('fade-time')
                         console.log(fadeTime);
@@ -365,9 +375,13 @@ function scrollTravel() {
                   }
                   console.log("currentChild", currentChild, typeof(levelsInfo[nextLevelIndex].currentChild));
                   if (typeof(currentChild) != "undefined") {
-                     currentChild.find('video').animate({
-                        opacity: 1
-                     }, 800)
+
+                     if(currentChild.find('video').length>0){
+                        currentChild.find('video').animate({
+                           opacity: 1
+                        }, 800)
+                     }
+
                      currentChild.find('.appear').each(function() {
                         var fadeTime = $(this).data('fade-time')
                         console.log(fadeTime);
@@ -556,9 +570,11 @@ function scrollTravel() {
 
          console.log("To Do:", "fade out elements from last viewed element");
 
-         currentChild.find('video').each(function() {
-            $(this).get(0).play()
-         })
+         if( currentChild.find('video').length > 0 ) {
+            currentChild.find('video').each(function() {
+               $(this).get(0).play()
+            })
+         }
          if (typeof(lastScrolledChild) != "undefined") {
             lastScrolledChild.find('.appear,video').stop().animate({
                opacity: 0
