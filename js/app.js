@@ -30,7 +30,6 @@ gotMouseWheel = false
 lastScrollTop = 0
 scrollAmount = 0
 step = 100
-scrollContainer = $('.scroll-container')
 currentLevelIndex = 0
 
 scrollTotal = 0
@@ -40,6 +39,8 @@ nextLevelIndex = 0
 
 
 $(document).ready(function(){
+
+   scrollContainer = $('.scroll-container')
 
    totalHeight = getTotalScrollHeight();
 
@@ -207,7 +208,7 @@ function scrollTravel() {
 
    for( i in levelsInfo ) {
 
-      if( scrollTotal >= levelsInfo[i].start && scrollTotal < levelsInfo[i].start + levelsInfo[i].size ) {
+      if( scrollTotal >= levelsInfo[i].start && scrollTotal <= levelsInfo[i].start + levelsInfo[i].size ) {
 
          nextLevelIndex = i
 
