@@ -161,13 +161,6 @@ function scrollTravel() {
             nextLevelIndex = i
             // console.log("nextLevelIndex", nextLevelIndex, i);
 
-console.log(
-   "\n\n\n\n\n",
-   "indexes",
-   currentLevelIndex,
-   nextLevelIndex,
-   "\n\n\n\n\n"
-);
             if( currentLevelIndex == nextLevelIndex ) {
                console.log("\nIS SAME\n");
                if( levelsInfo[nextLevelIndex].size <= $(window).width() + $(window).height() ) {
@@ -261,7 +254,8 @@ console.log(
                   }
                   // scrollTotal = scrollToPct
 
-                  console.log("to do", "RUN LEVEL STEP FUNCTIONS FOR n");
+                  console.log("offsetcalc", offsetLeft );
+                  // console.log("to do", "RUN LEVEL STEP FUNCTIONS FOR n");
 
                   if (typeof(currentChild) == "undefined") {
                      currentChild = levelsInfo[currentLevelIndex].children.eq(0)
@@ -292,7 +286,9 @@ console.log(
 
                   currentLevel.stop().animate({
                      left: -offsetLeft
-                  }, 1200)
+                  }, 1200, function(){
+                     console.log("we're animated left");
+                  })
 
 
                } else {
@@ -822,7 +818,7 @@ console.log("\n\n set elementIndex", elementIndex);
             children: children,
             childrenWidth: childrenWidth,
             size: scrollLength,
-            doneScrolling: true,
+            doneScrolling: false,
             currentChild: 0
          })
 
