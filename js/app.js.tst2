@@ -45,6 +45,8 @@ $(document).ready(function() {
 
    totalHeight = getTotalScrollHeight();
 
+   // var tcw = $('.travel').css({ left: - ( width / 2 ) })
+
    $('.empty-height-container').height(totalHeight)
 
    setupScroll()
@@ -53,8 +55,26 @@ $(document).ready(function() {
 
    levels = createStructure()
 
-   setupLayout()
+   // set levels' widths
+   $('.level.auto-w').each(function() {
 
+      i = $(this).index()
+
+      // console.log('levelsInfo[',i,'].childrenWidth',levelsInfo[i].childrenWidth)
+      $(this).width(levelsInfo[i].childrenWidth)
+
+      $(this).children().first().width(levelsInfo[i].childrenWidth)
+
+   })
+
+
+
+
+   $('.level').each(function() {
+
+      addLevelToMenu($(this))
+
+   })
 
 
    setupHorizontalScrollWidth()
@@ -85,7 +105,7 @@ $(document).ready(function() {
       }
    });
 
-   // goTo(0, 0)
+   goTo(0, 0)
 
 })
 
@@ -119,13 +139,104 @@ function setupScroll() {
       scrollStep = scrollContainer.width() * 0.85
    }
 
-   console.log("\n\n\n\n\n\n\nset scrollstep, setup", scrollStep);
 
 
-   setupEvents()
+   $('.scroll-container').on("pointerup", function(event) {
+
+      // console.log("up", draggingPointer, event.pageY, event.pageX);
+
+      if (draggingPointer && startedDrag) {
+
+         var direction;
 
 
-   // scrollTravel()
+         if (Math.abs(startY - event.pageY) > Math.abs(startX - event.pageX)) {
+            direction = startY - event.pageY
+            travelAxis = "vertical"
+            if (direction < 0) travelDirection = "up"
+            if (direction > 0) travelDirection = "down"
+         } else {
+            direction = startX - event.pageX
+            travelAxis = "horizontal"
+            if (direction < 0) travelDirection = "left"
+            if (direction > 0) travelDirection = "right"
+         }
+
+
+         direction = Math.max(-1, direction)
+         direction = Math.min(1, direction)
+
+         increment = direction * scrollStep
+
+         scrollTotal += increment
+         scrollTotal = Math.max(scrollTotal, 0)
+         scrollTotal = Math.min(scrollTotal, totalHeight)
+
+         scrollTravel()
+
+      }
+
+      draggingPointer = false
+      startedDrag = false
+      travelAxis = undefined
+      travelDirection = undefined
+   });
+
+
+   $('.scroll-container').on("pointerdown", function(event) {
+      startedDrag = true
+      // console.log(startY, startX );
+      startY = event.pageY
+      startX = event.pageX
+
+   });
+
+   $('.scroll-container').on("pointermove", function(event) {
+      if (startedDrag) draggingPointer = true
+      // console.log("move");
+      //
+      // startY = event.pageY
+      // startX = event.pageX
+
+   });
+
+
+   $(window).on('mousewheel', function(event) {
+      if (!gotMouseWheel) {
+
+         clearTimeout(isScrolling)
+         isScrolling = setTimeout(function() {
+            scrollTotal += -event.deltaY * scrollStep
+            scrollTotal = Math.max(scrollTotal, 0)
+            scrollTotal = Math.min(scrollTotal, totalHeight)
+
+
+            travelAxis = "vertical";
+
+            if (event.deltaY === -1) {
+               travelDirection = "down";
+            }
+            if (event.deltaY === 1) {
+               travelDirection = "up";
+            }
+
+            scrollTravel()
+
+            isScrolling = false
+
+         }, 150)
+
+         gotMouseWheel = setTimeout(function() {
+            gotMouseWheel = false
+         }, 100)
+
+      }
+
+   });
+
+
+
+   scrollTravel()
 
 }
 
@@ -166,14 +277,14 @@ function scrollTravel() {
 
                   if (travelAxis === "vertical") {
                      if (travelDirection === "up") {
-                        nextLevelIndex--;
+                        nextLevelIndex++;
                      }
                      if (travelDirection === "down") {
-                        nextLevelIndex++;
+                        nextLevelIndex--;
                      }
                   }
 
-                  console.log("\n\n\n\n\n",travelDirection, "doneScrollingtrue", i);
+                  console.log("doneScrollingtrue", i);
                   levelsInfo[i].doneScrolling = true
 
                }
@@ -354,15 +465,12 @@ function scrollTravel() {
 
                      if (numChildren > 1) {
 
+
                         scrollStep = nextLevel.width() / numChildren
 
                         scrollStep = Math.max(scrollContainer.width(), scrollStep)
 
-                        scrollStep *= 0.85
-
-
                      }
-                     console.log("\n\n\n\n\n\n\nset scrollstep", scrollStep, "travel");
                   }
 
                   console.log("set Current Level", currentLevelIndex);
@@ -471,26 +579,13 @@ function scrollTravel() {
          // map scrollInLevel to child elements' positions, centering them
          console.log("SCROLL.I.L", scrollInLevelPct, $('.level').eq(currentLevelIndex).children().first().children().length, levelsInfo[currentLevelIndex].size)
 
-         levelsInfo[nextLevelIndex].doneScrolling = false
-
          if (travelDirection === "left" || travelDirection === "up") {
             levelsInfo[nextLevelIndex].currentChild--
-            if( levelsInfo[nextLevelIndex].currentChild < 0 ) {
-               levelsInfo[nextLevelIndex].currentChild = Math.max(levelsInfo[nextLevelIndex].currentChild,0)
-               nextLevelIndex++
-               // scrollTravel()
-            }
          } else {
             levelsInfo[nextLevelIndex].currentChild++
-
-            if( levelsInfo[nextLevelIndex].currentChild > levelsInfo[nextLevelIndex].children.length - 1) {
-               levelsInfo[nextLevelIndex].currentChild = Math.min(levelsInfo[nextLevelIndex].currentChild,levelsInfo[nextLevelIndex].children.length)
-               nextLevelIndex--
-               // scrollTravel()
-            }
-
          }
 
+         levelsInfo[nextLevelIndex].doneScrolling = false
 
          console.log("currentChild index:", levelsInfo[nextLevelIndex].currentChild);
          var currentChild = levelsInfo[nextLevelIndex].children.eq(levelsInfo[nextLevelIndex].currentChild)
@@ -651,8 +746,6 @@ function scrollTravel() {
 
          levelsInfo[levelIndex].currentChild = elementIndex
 
-console.log("\n\n set elementIndex", elementIndex);
-
          if ((elementIndex in levels[levelIndex].children)) {
 
             currentElementIndex = elementIndex
@@ -791,6 +884,13 @@ console.log("\n\n set elementIndex", elementIndex);
          scrollLength = $(this).width()
 
 
+         // if( $(this).width() > scrollContainer.width() ) {
+
+         // scrollLength += $(this).width() // #level-4 {
+         //    width: $container_width * 6;
+         // }
+
+         // }
 
          $(this).attr('data-scroll-length', scrollLength)
 
@@ -817,9 +917,18 @@ console.log("\n\n set elementIndex", elementIndex);
             currentChild: 0
          })
 
+         //console.log(levelsInfo)
 
+         // if( ! $(this).hasClass('auto-w')) {
          totalHeight += scrollLength
+         // }
+         // else {
+         //    totalHeight += childrenWidth
+         // }
 
+         // if ($(this).index() >= items.length - 1) {
+         //    totalHeight += scrollLength
+         // }
 
       })
 
@@ -950,132 +1059,3 @@ console.log("\n\n set elementIndex", elementIndex);
       }
 
    };
-
-
-
-
-
-
-function setupEvents(){
-   $('.scroll-container').on("pointerup", function(event) {
-
-      // console.log("up", draggingPointer, event.pageY, event.pageX);
-
-      if (draggingPointer && startedDrag) {
-
-         var direction;
-
-
-         if (Math.abs(startY - event.pageY) > Math.abs(startX - event.pageX)) {
-            direction = startY - event.pageY
-            travelAxis = "vertical"
-            if (direction < 0) travelDirection = "up"
-            if (direction > 0) travelDirection = "down"
-         } else {
-            direction = startX - event.pageX
-            travelAxis = "horizontal"
-            if (direction < 0) travelDirection = "left"
-            if (direction > 0) travelDirection = "right"
-         }
-
-
-         direction = Math.max(-1, direction)
-         direction = Math.min(1, direction)
-
-console.log("DO Increment! drag", scrollStep);
-         increment = direction * scrollStep
-
-         scrollTotal += increment
-         scrollTotal = Math.max(scrollTotal, 0)
-         scrollTotal = Math.min(scrollTotal, totalHeight)
-
-         scrollTravel()
-
-      }
-
-      draggingPointer = false
-      startedDrag = false
-      travelAxis = undefined
-      travelDirection = undefined
-   });
-
-
-   $('.scroll-container').on("pointerdown", function(event) {
-      startedDrag = true
-      // console.log(startY, startX );
-      startY = event.pageY
-      startX = event.pageX
-
-   });
-
-   $('.scroll-container').on("pointermove", function(event) {
-      if (startedDrag) draggingPointer = true
-      // console.log("move");
-      //
-      // startY = event.pageY
-      // startX = event.pageX
-
-   });
-
-
-   $(window).on('mousewheel', function(event) {
-      if (!gotMouseWheel) {
-
-         clearTimeout(isScrolling)
-         isScrolling = setTimeout(function() {
-            console.log("DO Increment scroll!", scrollStep);
-            scrollTotal += -event.deltaY * scrollStep
-            scrollTotal = Math.max(scrollTotal, 0)
-            scrollTotal = Math.min(scrollTotal, totalHeight)
-
-
-            travelAxis = "vertical";
-
-            if (event.deltaY === -1) {
-               travelDirection = "down";
-            }
-            if (event.deltaY === 1) {
-               travelDirection = "up";
-            }
-
-            scrollTravel()
-
-            isScrolling = false
-
-         }, 150)
-
-         gotMouseWheel = setTimeout(function() {
-            gotMouseWheel = false
-         }, 100)
-
-      }
-
-   });
-
-}
-
-
-
-
-function setupLayout() {
-   // set levels' widths
-   $('.level.auto-w').each(function() {
-
-      i = $(this).index()
-
-      // console.log('levelsInfo[',i,'].childrenWidth',levelsInfo[i].childrenWidth)
-      $(this).width(levelsInfo[i].childrenWidth)
-
-      $(this).children().first().width(levelsInfo[i].childrenWidth)
-
-   })
-
-
-
-
-   $('.level').each(function() {
-
-      addLevelToMenu($(this))
-
-   })
-}
