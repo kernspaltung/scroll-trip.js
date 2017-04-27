@@ -57,9 +57,12 @@ $(document).ready(function() {
 
    // set levels' widths
    $('.level.auto-w').each(function() {
+
       i = $(this).index()
+
       // console.log('levelsInfo[',i,'].childrenWidth',levelsInfo[i].childrenWidth)
       $(this).width(levelsInfo[i].childrenWidth)
+
       $(this).children().first().width(levelsInfo[i].childrenWidth)
 
    })
@@ -140,7 +143,7 @@ function setupScroll() {
 
    $('.scroll-container').on("pointerup", function(event) {
 
-      console.log("up", draggingPointer, event.pageY, event.pageX);
+      // console.log("up", draggingPointer, event.pageY, event.pageX);
 
       if (draggingPointer && startedDrag) {
 
@@ -260,7 +263,25 @@ function scrollTravel() {
 
             nextLevelIndex = i
 
-            console.log("scrolled into", i);
+
+            if( currentLevelIndex === nextLevelIndex ) {
+               if( levelsInfo[i].size <= $(window).width() ) {
+
+                  if (travelAxis === "vertical") {
+                     if (travelDirection === "up") {
+                        nextLevelIndex++;
+                     }
+                     if (travelDirection === "down") {
+                        nextLevelIndex--;
+                     }
+                  }
+
+               }
+            }
+
+            console.log("doneScrollingtrue", i);
+            levelsInfo[i].doneScrolling = true
+            console.log("scrolled into", nextLevelIndex);
 
             break
 
@@ -269,6 +290,8 @@ function scrollTravel() {
       }
 
       nextLevel = $('.level').eq(nextLevelIndex)
+
+
 
       if (currentLevelIndex !== nextLevelIndex) {
 
@@ -303,7 +326,7 @@ function scrollTravel() {
             }
 
             if (!scrollingHorizontalLevel) {
-
+console.log("currentLevelIndex", currentLevelIndex);
                if (!levelsInfo[currentLevelIndex].doneScrolling) {
 
                   // console.log("Done!");
@@ -838,12 +861,13 @@ function scrollTravel() {
             top: i / items.length * (scrollContainer.height() * items.length)
          })
 
-         scrollLength = $(this).height()
+         // scrollLength = $(this).height()
+         scrollLength = $(this).width()
 
 
          // if( $(this).width() > scrollContainer.width() ) {
 
-         scrollLength += $(this).width() // #level-4 {
+         // scrollLength += $(this).width() // #level-4 {
             //    width: $container_width * 6;
             // }
 
@@ -873,6 +897,8 @@ function scrollTravel() {
                doneScrolling: false,
                currentChild: 0
             })
+
+            //console.log(levelsInfo)
 
             // if( ! $(this).hasClass('auto-w')) {
                totalHeight += scrollLength

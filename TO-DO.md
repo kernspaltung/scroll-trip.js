@@ -1,8 +1,12 @@
 # To-Do List:
 
-o bugfixes
+# bugfixes
+   x doesnt scroll on first
+   x some levels dont scroll to next on first scroll
+   - some levels being skipped
 
 
+# future features
 - Hide non visible levels
 - Add arrows to clarify navigation
 - Add scrollable content inside a specific box
