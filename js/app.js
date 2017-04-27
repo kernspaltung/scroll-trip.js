@@ -163,7 +163,8 @@ function scrollTravel() {
 
             if( currentLevelIndex == nextLevelIndex ) {
                console.log("\nIS SAME\n");
-               if( levelsInfo[nextLevelIndex].size <= $(window).width() + $(window).height() ) {
+               if(  levelsInfo[nextLevelIndex].size <= $(window).width() ) {
+               // if( ! $('.level').eq(nextLevelIndex).hasClass('multi-children') && levelsInfo[nextLevelIndex].size <= $(window).width() ) {
                   console.log("\nIS less\n");
 
                   if (travelAxis === "vertical") {
@@ -484,16 +485,16 @@ function scrollTravel() {
          if (travelDirection === "left" || travelDirection === "up") {
             levelsInfo[nextLevelIndex].currentChild--
             if( levelsInfo[nextLevelIndex].currentChild < 0 ) {
-               levelsInfo[nextLevelIndex].currentChild = Math.max(levelsInfo[nextLevelIndex].currentChild,0)
-               nextLevelIndex++
+               levelsInfo[nextLevelIndex].currentChild = 0
+               // nextLevelIndex++
                // scrollTravel()
             }
          } else {
             levelsInfo[nextLevelIndex].currentChild++
 
-            if( levelsInfo[nextLevelIndex].currentChild > levelsInfo[nextLevelIndex].children.length - 1) {
-               levelsInfo[nextLevelIndex].currentChild = Math.min(levelsInfo[nextLevelIndex].currentChild,levelsInfo[nextLevelIndex].children.length)
-               nextLevelIndex--
+            if( levelsInfo[nextLevelIndex].currentChild >= levelsInfo[nextLevelIndex].children.length - 1) {
+               levelsInfo[nextLevelIndex].currentChild = levelsInfo[nextLevelIndex].children.length - 1
+               // nextLevelIndex--
                // scrollTravel()
             }
 
@@ -560,6 +561,9 @@ function scrollTravel() {
          }, 1500, function() {
             lastScrolledChild = currentChild
             console.log("we're in child", currentChildIndex);
+            if( currentChild < 0 || currentChild > levelsInfo[nextLevelIndex].children.length ) {
+               levelsInfo[nextLevelIndex].doneScrolling = true
+            }
          })
 
 
@@ -796,13 +800,14 @@ console.log("\n\n set elementIndex", elementIndex);
 
       items.each(function(i) {
 
+         thisLevel = $(this)
 
          $(this).css({
             top: i / items.length * (scrollContainer.height() * items.length)
          })
 
-         scrollLength = $(this).height()
          scrollLength = $(this).width()
+         // scrollLength = $(this).height()
 
 
 
@@ -811,7 +816,15 @@ console.log("\n\n set elementIndex", elementIndex);
          itemSizes = []
          var children
          if ($(this).children().length === 1) children = $(this).children().first().children()
-         else if ($(this).children().length > 1) children = $(this).children()
+         else if ($(this).children().length > 1) {
+            children = $(this).children()
+         }
+
+
+         if( $(this).find('.children-container').length > 0 ) {
+            children = $(this).find('.children-container').children()
+            console.log("has container", children.length )
+         }
 
          childrenWidth = 0
 
@@ -819,7 +832,14 @@ console.log("\n\n set elementIndex", elementIndex);
             var cw = $(this).outerWidth(true)
             itemSizes.push(cw)
             childrenWidth += cw
+            console.log( "add", cw )
          })
+         // console.log("\n\n\n\nchildren.length\n\n\n\n",children.length);
+         if( thisLevel.hasClass('multi-children') ) {
+            scrollLength += childrenWidth
+            console.log("\n\n\nADD CHILDREN\n\n\n");
+            // scrollLength = Math.min( scrollLength, childrenWidth )
+         }
 
          levelsInfo.push({
             start: totalHeight,
