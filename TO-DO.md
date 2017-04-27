@@ -1,9 +1,9 @@
 # To-Do List:
 
 # bugfixes
-   x doesnt scroll on first
+   o doesnt scroll on first
    x some levels dont scroll to next on first scroll
-   - some levels being skipped
+   x some levels being skipped
 
 
 # future features

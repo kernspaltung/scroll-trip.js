@@ -147,6 +147,7 @@ function scrollTravel() {
    // )
    console.log(
       "scroll:",
+
       scrollTotal,
       levelsInfo[currentLevelIndex].size,
       levelsInfo[currentLevelIndex].start ,
@@ -160,9 +161,17 @@ function scrollTravel() {
             nextLevelIndex = i
             // console.log("nextLevelIndex", nextLevelIndex, i);
 
-
-            if( currentLevelIndex === nextLevelIndex ) {
+console.log(
+   "\n\n\n\n\n",
+   "indexes",
+   currentLevelIndex,
+   nextLevelIndex,
+   "\n\n\n\n\n"
+);
+            if( currentLevelIndex == nextLevelIndex ) {
+               console.log("\nIS SAME\n");
                if( levelsInfo[nextLevelIndex].size <= $(window).width() + $(window).height() ) {
+                  console.log("\nIS less\n");
 
                   if (travelAxis === "vertical") {
                      if (travelDirection === "up") {
