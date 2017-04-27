@@ -287,7 +287,7 @@ function scrollTravel() {
                   currentLevel.stop().animate({
                      left: -offsetLeft
                   }, 1200, function(){
-                     console.log("we're animated left");
+                     console.log("we've animated left");
                   })
 
 
@@ -356,6 +356,9 @@ function scrollTravel() {
                   if (nextLevel.length > 0) {
 
                      numChildren = nextLevel.children().first().children().length
+
+                     scrollStep = nextLevel.width()
+                     scrollStep *= 0.85
 
                      if (numChildren > 1) {
 
@@ -497,14 +500,17 @@ function scrollTravel() {
          }
 
 
-         console.log("currentChild index:", levelsInfo[nextLevelIndex].currentChild);
-         var currentChild = levelsInfo[nextLevelIndex].children.eq(levelsInfo[nextLevelIndex].currentChild)
+         currentChildIndex = levelsInfo[nextLevelIndex].currentChild
+
+         console.log("currentChild index:", currentChildIndex);
+
+         var currentChild = levelsInfo[nextLevelIndex].children.eq(currentChildIndex)
 
 
          // offsetLeft = scrollInLevel * ( nextLevel.innerWidth() - scrollContainer.outerWidth() )
          // offsetLeft =
 
-         offsetLeft = currentChild.position().left - (scrollContainer.width() - currentChild.width()) / 2
+         offsetLeft = currentChild.offset().left - (scrollContainer.width() - currentChild.width()) / 2
 
          if (currentChild.width() > scrollContainer.width() * 1.3) {
             console.log("ULTRAWIDE");
@@ -518,6 +524,7 @@ function scrollTravel() {
          console.log("check", offsetLeft, maxScroll)
 
          offsetLeft = Math.min(offsetLeft, nextLevel.width())
+         offsetLeft = Math.max(offsetLeft, 0)
 
 
 
@@ -547,10 +554,12 @@ function scrollTravel() {
                opacity: 1
             }, fadeTime)
          })
+
          nextLevel.stop().stop().animate({
             left: -offsetLeft
          }, 1500, function() {
             lastScrolledChild = currentChild
+            console.log("we're in child", currentChildIndex);
          })
 
 
@@ -1076,11 +1085,10 @@ function setupLayout() {
    })
 
 
-
-
    $('.level').each(function() {
 
       addLevelToMenu($(this))
 
    })
+
 }
