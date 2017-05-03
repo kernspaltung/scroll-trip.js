@@ -10,6 +10,8 @@ var horizontalScrollingDone
 
 var lastScrolledChild
 
+var callbacks = []
+
 window.requestAnimFrame = (function() {
    return window.requestAnimationFrame ||
    window.webkitRequestAnimationFrame ||
@@ -86,6 +88,8 @@ $(document).ready(function() {
    });
 
    // goTo(0, 0)
+
+   add_callback( function(level, child) { console.log( level, child ) })
 
 })
 
@@ -289,6 +293,8 @@ function scrollTravel() {
                      left: -offsetLeft
                   }, 1200, function(){
                      console.log("we've animated left");
+                     do_callbacks( currentLevelIndex );
+
                   })
 
 
@@ -333,10 +339,8 @@ function scrollTravel() {
                   $('.travel').stop().animate({
                      marginTop: nextHeight
                   }, 600, function() {
-                     //
-                     // $('.level').eq(currentLevelIndex).stop().animate({
-                     //    left: ( scrollTotal - levelsInfo[ currentLevelIndex ].start )
-                     // }, 600)
+
+                  do_callbacks( nextLevelIndex );
 
                   })
 
@@ -444,7 +448,11 @@ function scrollTravel() {
 
                      horizontalScrollLevel.stop().animate({
                         left: left
-                     }, 600, function() {})
+                     }, 600, function() {
+
+                        do_callbacks( nextLevelIndex );
+
+                     })
 
                      goTo(goToLevel)
 
@@ -458,7 +466,9 @@ function scrollTravel() {
 
                      horizontalScrollLevel.stop().animate({
                         left: left
-                     }, 1200, function() {})
+                     }, 1200, function() {
+                        do_callbacks( nextLevelIndex );
+                     })
 
                   }
 
@@ -560,7 +570,11 @@ function scrollTravel() {
             left: -offsetLeft
          }, 1500, function() {
             lastScrolledChild = currentChild
+
             console.log("we're in child", currentChildIndex);
+
+            do_callbacks( nextLevelIndex, currentChildIndex );
+
             if( currentChild < 0 || currentChild > levelsInfo[nextLevelIndex].children.length ) {
                levelsInfo[nextLevelIndex].doneScrolling = true
             }
@@ -729,6 +743,8 @@ console.log("\n\n set elementIndex", elementIndex);
                scrollTotal = (levelsInfo[levelIndex].start + offsetLeft) + 1
 
                // scrollTravel()
+               do_callbacks( nextLevelIndex, elementIndex );
+
 
             })
 
@@ -1110,5 +1126,37 @@ function setupLayout() {
       addLevelToMenu($(this))
 
    })
+
+}
+
+
+
+function add_callback( callback ) {
+   callbacks.push( callback )
+}
+
+function do_callbacks( level, child ) {
+
+   if( level != null ) {
+
+      if( child != null ) {
+
+         for( i in callbacks ) {
+            callbacks[i]( level, child )
+         }
+
+         return
+
+      }
+
+      for( i in callbacks ) {
+         callbacks[i]( level )
+      }
+
+      return
+
+
+   }
+
 
 }
